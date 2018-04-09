@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blip</title>
+</head>
+<body>
+<textarea title="editor" id="editor">#scene scene1: {
+
+    scale: 0.6
+
+    #object
+        perso: perso, 0, 0
+        elec1: elec, 0, 0
+        elec2: elec, 0, -400
+        ondes1: ondes, 0, 0
+        ondes2: ondes, -5, -393
+
+    #background
+        bg1: "../files/game1/backgrounds/fond.png", 0, 0
+
+    #control
+        ctrlA: {
+            sprite: "../files/controls/buttonA.png", 700, 100
+            key: "a"
+        }
+
+        cross:  {
+            sprite: "../files/controls/cross.png", 707, 266
+
+            #zone
+                top: 30, 0, 30, 30, "ArrowUp"
+                bottom: 30, 60, 30, 30, "ArrowDown"
+                right: 60, 30, 30, 30, "ArrowRight"
+                left: 0, 30, 30, 30, "ArrowLeft"
+        }
+}
+
+#instantiable perso: {
+
+    #sprite
+        r1p1: "../files/game1/sprites/r1p1.png", 160, 1038
+        r1p2: "../files/game1/sprites/r1p2.png", 307, 1045
+        r1p3: "../files/game1/sprites/r1p3.png", 434, 1046
+        r1p4: "../files/game1/sprites/r1p4.png", 581, 1048
+
+        e1p1: "../files/game1/sprites/e1p1.png", 705, 1027
+        e1p2: "../files/game1/sprites/e1p2.png", 707, 818
+
+        r2p1: "../files/game1/sprites/r2p1.png", 710, 642
+        r2p2: "../files/game1/sprites/r2p2.png", 573, 657
+        r2p3: "../files/game1/sprites/r2p3.png", 443, 650
+        r2p4: "../files/game1/sprites/r2p4.png", 323, 653
+
+        r2p1s: "../files/game1/sprites/r2p1s.png", 693, 555
+        r2p2s: "../files/game1/sprites/r2p2s.png", 558, 562
+        r2p3s: "../files/game1/sprites/r2p3s.png", 433, 557
+        r2p4s: "../files/game1/sprites/r2p4s.png", 312, 567
+
+        e2p1: "../files/game1/sprites/e2p1.png", 189, 606
+        e2p2: "../files/game1/sprites/e2p2.png", 181, 415
+
+        r3p1: "../files/game1/sprites/r3p1.png", 182, 238
+        r3p2: "../files/game1/sprites/r3p2.png", 325, 243
+        r3p3: "../files/game1/sprites/r3p3.png", 449, 252
+        r3p4: "../files/game1/sprites/r3p4.png", 581, 251
+
+        r3p1s: "../files/game1/sprites/r3p1s.png", 175, 125
+        r3p2s: "../files/game1/sprites/r3p2s.png", 320, 160
+        r3p3s: "../files/game1/sprites/r3p3s.png", 445, 155
+        r3p4s: "../files/game1/sprites/r3p4s.png", 576, 142
+
+    #trigger
+        lclick: "controldown", "cross_left"
+        rclick: "controldown", "cross_right"
+        tclick: "controldown", "cross_top"
+        bclick: "controldown", "cross_bottom"
+        jump: "controldown", "ctrlA"
+        fall: "time", 0.5
+
+    #sound
+        snd1: "../files/sounds/taken.mp3"
+        snd2: "../files/sounds/blip.mp3"
+
+    #graph
+        gr1: {
+            #node
+                nr1p1:
+                    r1p1
+                    rclick -> nr1p2
+
+                nr1p2:
+                    r1p2
+                    rclick -> nr1p3
+                    lclick -> nr1p1
+
+                nr1p3:
+                    r1p3
+                    rclick -> nr1p4
+                    lclick -> nr1p2
+
+                nr1p4:
+                    r1p4
+                    lclick -> nr1p3
+                    rclick -> ne1p1
+
+                ne1p1:
+                    e1p1
+                    lclick -> nr1p4
+                    tclick -> ne1p2
+
+                ne1p2:
+                    e1p2
+                    bclick -> ne1p1
+                    tclick -> nr2p1
+
+                nr2p1:
+                    r2p1
+                    bclick -> ne1p2
+                    lclick -> nr2p2
+                    jump -> nr2p1s
+
+                nr2p1s:
+                    r2p1s
+                    fall -> nr2p1
+
+                nr2p2:
+                    r2p2
+                    rclick -> nr2p1
+                    lclick -> nr2p3
+                    jump -> nr2p2s
+
+                nr2p2s:
+                    r2p2s
+                    fall->nr2p2
+
+                nr2p3:
+                    r2p3
+                    rclick->nr2p2
+                    lclick->nr2p4
+                    jump->nr2p3s
+
+                nr2p3s:
+                    r2p3s
+                    fall->nr2p3
+
+                nr2p4:
+                    r2p4
+                    rclick->nr2p3
+                    jump->nr2p4s
+                    lclick->ne2p1
+
+                nr2p4s:
+                    r2p4s
+                    fall->nr2p4
+
+                ne2p1:
+                    e2p1
+                    rclick->nr2p4
+                    tclick->ne2p2
+
+                ne2p2:
+                    e2p2
+                    bclick->ne2p1
+                    tclick->nr3p1
+
+                nr3p1:
+                    r3p1
+                    bclick->ne2p2
+                    rclick->nr3p2
+                    jump->nr3p1s
+
+                nr3p1s:
+                    r3p1s
+                    fall->nr3p1
+
+                nr3p2:
+                    r3p2
+                    rclick->nr3p3
+                    lclick->nr3p1
+                    jump->nr3p2s
+
+                nr3p2s:
+                    r3p2s
+                    fall->nr3p2
+
+                nr3p3:
+                    r3p3
+                    rclick->nr3p4
+                    lclick->nr3p2
+                    jump->nr3p3s
+
+                nr3p3s:
+                    r3p3s
+                    fall->nr3p3
+
+                nr3p4:
+                    r3p4
+                    lclick->nr3p3
+                    jump->nr3p4s
+
+                nr3p4s:
+                    r3p4s
+                    fall->nr3p4
+        }
+
+    @lsound {
+        sound snd2 > play
+    }
+
+    @start {
+        control cross_right > enable
+        control cross_left > enable
+        control cross_top > enable
+        control cross_bottom > enable
+        control ctrlA > enable
+        graph gr1 > setnode nr1p1
+
+        listen (rclick) {
+            script lsound > execute
+        }
+    }
+
+
+}
+
+#instantiable elec: {
+
+    #sprite
+        e1el1: "../files/game1/details/e1el1.png", 574, 756
+        e1el2: "../files/game1/details/e1el2.png", 448, 756
+        e1el3: "../files/game1/details/e1el3.png", 318, 754
+        e1el4: "../files/game1/details/e1el4.png", 188, 752
+
+    #clock
+        main: 0.4
+
+    #sequence
+        seq1: e1el4, e1el3, e1el2, e1el1
+
+    #animation
+        an1: seq1, clock(main), 1
+
+    @start {
+        clock main > start
+        animation an1 > play
+    }
+}
+
+#instantiable ondes: {
+
+    #sprite
+        ondes1e1: "../files/game1/details/ondes1.png", 45, 695
+        ondes2e1: "../files/game1/details/ondes2.png", 86, 704
+        ondes3e1: "../files/game1/details/ondes3.png", 118, 720
+        ondes4e1: "../files/game1/details/ondes4.png", 148, 726
+
+    #state
+        st1: ondes1e1
+        st2: ondes1e1, ondes2e1
+        st3: ondes1e1, ondes2e1, ondes3e1
+        st4: ondes1e1, ondes2e1, ondes3e1, ondes4e1
+        st5:
+
+    #sequence
+        seq1: state(st1), state(st2), state(st3), state(st4), state(st5)
+
+    #animation
+        an1: seq1, 0.5, 1
+
+    @start {
+        animation an1 > play
+    }
+}
+</textarea>
+<link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="node_modules/codemirror/theme/blackboard.css">
+<link rel="stylesheet" href="node_modules/codemirror/theme/ambiance.css">
+<link rel="stylesheet" href="styles/styles.css">
+<script src="node_modules/codemirror/lib/codemirror.js"></script>
+<script src="node_modules/codemirror/addon/mode/simple.js"></script>
+<script src="blip.js"></script>
+<script>
+
+    function synonyms(cm, option) {
+        console.log(cm, option);
+
+    };
+
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        lineNumbers: true,
+        theme: "ambiance"
+    });
+</script>
+</body>
+</html>
