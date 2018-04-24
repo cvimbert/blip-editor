@@ -23,7 +23,7 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
-    "blip-framework": "^1.0.3",
+    "blip-framework": "^1.0.6",
     "codemirror": "^5.37.0",
     "core-js": "^2.4.1",
     "material-design-icons": "^3.0.1",

@@ -5,6 +5,8 @@ import {AddCodeFileModalComponent} from "../add-code-file-modal/add-code-file-mo
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
+import {CodeStringsLoader} from "blip-framework";
+import {SceneUnitObject} from "blip-framework/core/src/global-objects/scene-unit-object.class";
 
 declare var require: any;
 const CodeMirror = require("codemirror/lib/codemirror");
@@ -37,12 +39,21 @@ export class CodeEditorComponent implements OnInit {
 
         this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
             let keys: string[] = Object.keys(data);
+            let codeFiles: string[] = [];
 
             if (keys.length > 0) {
                 this.selectedCodeFile = keys[0];
                 this.updateEditorContent();
                 this.currentFileName = keys[0];
             }
+
+            keys.forEach((key: string) => {
+                codeFiles.push(data[key]);
+            });
+
+            let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, (scene: SceneUnitObject) => {
+
+            });
         });
     }
 
