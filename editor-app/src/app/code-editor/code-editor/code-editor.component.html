@@ -1,0 +1,19 @@
+<mat-form-field>
+    <mat-select placeholder="Code file" [(ngModel)]="selectedCodeFile" (ngModelChange)="codeFileChanged($event)">
+        <mat-option *ngFor="let file of datas | async; let count = index" [value]="file">
+            {{ file }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<button mat-mini-fab color="primary" (click)="addCodeFile()">
+    <mat-icon aria-label="Add">add</mat-icon>
+</button>
+
+<button mat-mini-fab color="primary" (click)="save()">
+    <mat-icon aria-label="Save">save</mat-icon>
+</button>
+
+<button *ngIf="selectedCodeFile" mat-mini-fab color="primary" (click)="deleteCurrent()">
+    <mat-icon aria-label="Delete">delete_forever</mat-icon>
+</button>

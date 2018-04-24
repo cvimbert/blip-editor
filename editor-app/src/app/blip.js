@@ -7,9 +7,9 @@
 
 (function(mod) {
     if (typeof exports == "object" && typeof module == "object") // CommonJS
-        mod(require("node_modules/codemirror/lib/codemirror"), require("node_modules/codemirror/addon/mode/simple"));
+        mod(require("codemirror/lib/codemirror"), require("codemirror/addon/mode/simple"));
     else if (typeof define == "function" && define.amd) // AMD
-        define(["node_modules/codemirror/lib/codemirror", "node_modules/codemirror/addon/mode/simple"], mod);
+        define(["codemirror/lib/codemirror", "codemirror/addon/mode/simple"], mod);
     else // Plain browser env
         mod(CodeMirror);
 })(function(CodeMirror) {
@@ -68,8 +68,8 @@
         ],
         action: [
             {regex: />/, token: "operator", next: "action"},
-            {regex: /[A-Za-z0-9]+[ ]*$/, token: "", push: "script"},
-            {regex: /[A-Za-z0-9]+/, token: "", push: "actionArgs"}
+            {regex: /[A-Za-z0-9"]+[ ]*$/, token: "", push: "script"},
+            {regex: /[A-Za-z0-9"]+/, token: "", push: "actionArgs"}
         ],
         actionArgs: [
             {regex: /[A-Za-z0-9]+[ ]*$/, token: "string", next: "script"},
