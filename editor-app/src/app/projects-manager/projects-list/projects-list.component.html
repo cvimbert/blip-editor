@@ -1,0 +1,17 @@
+<div class="content">
+  <div>Blip</div>
+  <div>
+
+    <mat-form-field>
+      <mat-select placeholder="Code file" [(ngModel)]="selectedProject" (ngModelChange)="onSelect($event)">
+        <mat-option *ngFor="let project of projects | async" [value]="project">
+          {{ project }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+  <button (click)="addProject()" mat-mini-fab color="primary">
+    <mat-icon aria-label="Add">add</mat-icon>
+  </button>
+</div>

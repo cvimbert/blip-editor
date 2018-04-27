@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {CodeEditorComponent} from "./code-editor/code-editor.component";
+import {ProjectsListComponent} from "./projects-list/projects-list.component";
 
 const routes: Routes = [
     {
-        path: "project/:projectid",
-        component: CodeEditorComponent
+        path: "projects",
+        component: ProjectsListComponent
     }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class CodeEditorRoutingModule { }
+export class ProjectsManagerRoutingModule { }

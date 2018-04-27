@@ -10,6 +10,25 @@ import {CodeFilesProviderService} from "../code-files-provider.service";
 export class AddCodeFileModalComponent implements OnInit {
 
     fileName: string = "";
+    templateId: string = "none";
+
+    templates: {
+        value: string,
+        name: string
+    }[] = [
+        {
+            value: "none",
+            name: "None"
+        },
+        {
+            value: "baseSceneWithControls",
+            name: "Base scene with controls"
+        },
+        {
+            value: "baseObject",
+            name: "Base object"
+        }
+    ];
 
     constructor(
         private ref: MatDialogRef<AddCodeFileModalComponent>,
@@ -20,7 +39,10 @@ export class AddCodeFileModalComponent implements OnInit {
     }
 
     validateName() {
-        this.ref.close(this.fileName);
+        this.ref.close({
+            filename: this.fileName,
+            templateId: this.templateId
+        });
     }
 
     get isNameValid(): boolean {

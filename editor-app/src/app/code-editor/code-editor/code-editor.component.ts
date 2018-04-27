@@ -5,8 +5,9 @@ import {AddCodeFileModalComponent} from "../add-code-file-modal/add-code-file-mo
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import {CodeStringsLoader} from "blip-framework";
-import {SceneUnitObject} from "blip-framework/core/src/global-objects/scene-unit-object.class";
+import {CodeStringsLoader, SceneUnitObject} from "blip-framework";
+import {ActivatedRoute, Params} from "@angular/router";
+import {TemplatesManager} from "../../templates/templates-manager.class";
 
 declare var require: any;
 const CodeMirror = require("codemirror/lib/codemirror");
@@ -22,37 +23,49 @@ export class CodeEditorComponent implements OnInit {
     selectedCodeFile: string;
     currentFileName: string;
     editor: any;
+    gameScene: SceneUnitObject;
+    @ViewChild("gamezone") gameZone: ElementRef;
+    @ViewChild("editorzone") editorZone: ElementRef;
+
+    projectId: string;
+    templatesManager: TemplatesManager = new TemplatesManager();
 
     constructor(
         private codeFilesProvider: CodeFilesProviderService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
-        this.codeFilesProvider.loadFiles();
 
-        this.editor = CodeMirror(document.body, {
-            lineNumbers: true,
-            mode: "blip",
-            theme: "ambiance"
-        });
+        this.route.params.subscribe((params: Params) => {
+            this.codeFilesProvider.projectId = params["projectid"];
 
-        this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
-            let keys: string[] = Object.keys(data);
-            let codeFiles: string[] = [];
+            this.codeFilesProvider.loadFiles();
 
-            if (keys.length > 0) {
-                this.selectedCodeFile = keys[0];
-                this.updateEditorContent();
-                this.currentFileName = keys[0];
-            }
-
-            keys.forEach((key: string) => {
-                codeFiles.push(data[key]);
+            this.editor = CodeMirror(this.editorZone.nativeElement, {
+                lineNumbers: true,
+                mode: "blip",
+                theme: "ambiance"
             });
 
-            let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, (scene: SceneUnitObject) => {
+            this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
+                let keys: string[] = Object.keys(data);
+                let codeFiles: string[] = [];
 
+                if (keys.length > 0) {
+                    this.selectedCodeFile = keys[0];
+                    this.updateEditorContent();
+                    this.currentFileName = keys[0];
+                }
+
+                keys.forEach((key: string) => {
+                    codeFiles.push(data[key]);
+                });
+
+                let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, this.gameZone.nativeElement, (scene: SceneUnitObject) => {
+                    this.gameScene = scene;
+                });
             });
         });
     }
@@ -64,6 +77,30 @@ export class CodeEditorComponent implements OnInit {
 
     deleteCurrent() {
 
+    }
+
+    reload() {
+        // empty game zone
+        this.gameZone.nativeElement.innerHTML = "";
+
+        this.storeCurrent();
+
+        if (this.gameScene) {
+            this.gameScene.destroy();
+        }
+
+        this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
+            let keys: string[] = Object.keys(data);
+            let codeFiles: string[] = [];
+
+            keys.forEach((key: string) => {
+                codeFiles.push(data[key]);
+            });
+
+            let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, this.gameZone.nativeElement, (scene: SceneUnitObject) => {
+                this.gameScene = scene;
+            });
+        });
     }
 
     updateEditorContent() {
@@ -105,13 +142,30 @@ export class CodeEditorComponent implements OnInit {
     addCodeFile() {
         this.dialog.open(AddCodeFileModalComponent, {
             width: "400px"
-        }).afterClosed().subscribe((fileName: string) => {
-            if (fileName) {
+        }).afterClosed().subscribe((result: string) => {
+            if (result) {
                 this.storeCurrent();
-                this.codeFilesProvider.createFile(fileName);
+                this.codeFilesProvider.createFile(result["filename"]);
                 this.currentFileName = this.selectedCodeFile;
-                this.selectedCodeFile = fileName;
-                //this.editor.getDoc().setValue("");
+                this.selectedCodeFile = result["filename"];
+
+                let templateStr: string;
+
+                switch (result["templateId"]) {
+                    case "none":
+                        templateStr = "";
+                        break;
+
+                    default:
+                        templateStr = this.templatesManager.getTemplate(result["templateId"], {
+                            NAME: result["filename"]
+                        });
+                }
+
+                this.editor.getDoc().setValue(templateStr);
+                this.storeCurrent();
+                this.save();
+                this.reload();
             }
         });
     }
