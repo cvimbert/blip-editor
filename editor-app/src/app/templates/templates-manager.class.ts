@@ -13,9 +13,6 @@ export class TemplatesManager {
     private baseSceneWithControls: string = `#scene %NAME%: {
 
     scale: 0.6
-    
-    #sprite
-    	s1: "../assets/files/game1/sprites/r1p1.png", 20, 20
 
     #control
         ctrlA: {
@@ -40,7 +37,7 @@ export class TemplatesManager {
         downclick: control(cross_down).down
 
     @start {
-        sprite s1 > show
+        
     }
 }`;
 

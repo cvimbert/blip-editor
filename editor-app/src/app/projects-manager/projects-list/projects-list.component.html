@@ -1,9 +1,9 @@
 <div class="content">
-  <div>Blip</div>
+  <div class="mat-h1">Blip</div>
   <div>
 
     <mat-form-field>
-      <mat-select placeholder="Code file" [(ngModel)]="selectedProject" (ngModelChange)="onSelect($event)">
+      <mat-select placeholder="Project name" [(ngModel)]="selectedProject" (ngModelChange)="onSelect($event)">
         <mat-option *ngFor="let project of projects | async" [value]="project">
           {{ project }}
         </mat-option>

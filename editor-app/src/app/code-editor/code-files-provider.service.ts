@@ -6,7 +6,7 @@ import {ReplaySubject} from "rxjs/ReplaySubject";
 export class CodeFilesProviderService {
 
     datas: CodeFilesData;
-    datasSubject: ReplaySubject<{[key: string]: string}> = new ReplaySubject(1);
+    datasSubject: ReplaySubject<CodeFilesData> = new ReplaySubject(1);
 
     projectId: string;
 
@@ -17,19 +17,21 @@ export class CodeFilesProviderService {
 
         if (rawDatas && rawDatas !== "") {
             this.datas = JSON.parse(rawDatas);
-            this.datasSubject.next(this.datas.files);
         } else {
             this.datas = {
-                files: {}
+                files: {},
+                width: 600,
+                height: 400
             };
-            this.datasSubject.next(this.datas.files);
         }
+
+        this.datasSubject.next(this.datas);
     }
 
-    createFile(fileName: string) {
+    createFile(fileName: string, content: string = "") {
         if (this.isNameValid(fileName)) {
-            this.datas.files[fileName] = "";
-            this.datasSubject.next(this.datas.files);
+            this.datas.files[fileName] = content;
+            this.datasSubject.next(this.datas);
             this.save();
         }
     }

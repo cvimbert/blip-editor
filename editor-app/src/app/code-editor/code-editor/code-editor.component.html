@@ -25,8 +25,22 @@
         </button>
     </div>
     <div class="ccontainer">
-        <div #editorzone class="editor-zone"></div>
-        <div #gamezone class="game-zone"></div>
+        <div #editorzone class="editor-zone" [class.invisible]="selectedCodeFile === undefined"></div>
+        <div class="game-zone-container">
+            <div class="game-zone-header">
+                <mat-form-field >
+                    <input type="number" name="width" matInput placeholder="Scene width" [(ngModel)]="sceneWidth" (ngModelChange)="updateSceneSize()">
+                </mat-form-field>
+                <mat-form-field >
+                    <input type="number" name="height" matInput placeholder="Scene height" [(ngModel)]="sceneHeight" (ngModelChange)="updateSceneSize()">
+                </mat-form-field>
+            </div>
+            <div class="game-zone-wrapper">
+                <div class="game-zone-position-wrapper">
+                    <div #gamezone [parentAutoresize] class="game-zone" [style.width.px]="sceneWidth" [style.height.px]="sceneHeight"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

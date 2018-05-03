@@ -8,6 +8,7 @@ import 'rxjs/add/operator/take';
 import {CodeStringsLoader, SceneUnitObject} from "blip-framework";
 import {ActivatedRoute, Params} from "@angular/router";
 import {TemplatesManager} from "../../templates/templates-manager.class";
+import {CodeFilesData} from "../code-files-data.interface";
 
 declare var require: any;
 const CodeMirror = require("codemirror/lib/codemirror");
@@ -24,10 +25,11 @@ export class CodeEditorComponent implements OnInit {
     currentFileName: string;
     editor: any;
     gameScene: SceneUnitObject;
+    sceneWidth: number = 0;
+    sceneHeight: number = 0;
     @ViewChild("gamezone") gameZone: ElementRef;
     @ViewChild("editorzone") editorZone: ElementRef;
 
-    projectId: string;
     templatesManager: TemplatesManager = new TemplatesManager();
 
     constructor(
@@ -49,8 +51,8 @@ export class CodeEditorComponent implements OnInit {
                 theme: "ambiance"
             });
 
-            this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
-                let keys: string[] = Object.keys(data);
+            this.codeFilesProvider.datasSubject.take(1).subscribe((data: CodeFilesData) => {
+                let keys: string[] = Object.keys(data.files);
                 let codeFiles: string[] = [];
 
                 if (keys.length > 0) {
@@ -60,23 +62,30 @@ export class CodeEditorComponent implements OnInit {
                 }
 
                 keys.forEach((key: string) => {
-                    codeFiles.push(data[key]);
+                    codeFiles.push(data.files[key]);
                 });
 
                 let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, this.gameZone.nativeElement, (scene: SceneUnitObject) => {
                     this.gameScene = scene;
                 });
+
+                this.sceneHeight = data.height;
+                this.sceneWidth = data.width;
             });
         });
     }
 
     save() {
-        this.codeFilesProvider.datas.files[this.selectedCodeFile] = this.editor.getDoc().getValue();
         this.codeFilesProvider.save();
     }
 
     deleteCurrent() {
 
+    }
+
+    updateSceneSize() {
+        this.codeFilesProvider.datas.width = this.sceneWidth;
+        this.codeFilesProvider.datas.height = this.sceneHeight;
     }
 
     reload() {
@@ -89,12 +98,12 @@ export class CodeEditorComponent implements OnInit {
             this.gameScene.destroy();
         }
 
-        this.codeFilesProvider.datasSubject.take(1).subscribe((data: {[key: string]: string}) => {
-            let keys: string[] = Object.keys(data);
+        this.codeFilesProvider.datasSubject.take(1).subscribe((data: CodeFilesData) => {
+            let keys: string[] = Object.keys(data.files);
             let codeFiles: string[] = [];
 
             keys.forEach((key: string) => {
-                codeFiles.push(data[key]);
+                codeFiles.push(data.files[key]);
             });
 
             let loader: CodeStringsLoader = new CodeStringsLoader(codeFiles, this.gameZone.nativeElement, (scene: SceneUnitObject) => {
@@ -107,16 +116,26 @@ export class CodeEditorComponent implements OnInit {
         this.editor.getDoc().setValue(this.getCode(this.selectedCodeFile));
     }
 
-    storeCurrent() {
+    storePrevious() {
         if (this.currentFileName) {
             this.codeFilesProvider.datas.files[this.currentFileName] = this.editor.getDoc().getValue();
         }
+
+        this.save();
+    }
+
+    storeCurrent() {
+        if (this.selectedCodeFile) {
+            this.codeFilesProvider.datas.files[this.selectedCodeFile] = this.editor.getDoc().getValue();
+        }
+
+        this.save();
     }
 
     codeFileChanged(fileName: string) {
 
         // enregistrement dans le provider
-        this.storeCurrent();
+        this.storePrevious();
 
         this.updateEditorContent();
 
@@ -124,10 +143,10 @@ export class CodeEditorComponent implements OnInit {
     }
 
     get datas(): Observable<string[]> {
-        return this.codeFilesProvider.datasSubject.map((data: {[key: string]: string}) => {
+        return this.codeFilesProvider.datasSubject.map((data: CodeFilesData) => {
             let resp: string[] = [];
 
-            for (let key in data) {
+            for (let key in data.files) {
                 resp.push(key);
             }
 
@@ -145,8 +164,6 @@ export class CodeEditorComponent implements OnInit {
         }).afterClosed().subscribe((result: string) => {
             if (result) {
                 this.storeCurrent();
-                this.codeFilesProvider.createFile(result["filename"]);
-                this.currentFileName = this.selectedCodeFile;
                 this.selectedCodeFile = result["filename"];
 
                 let templateStr: string;
@@ -163,9 +180,9 @@ export class CodeEditorComponent implements OnInit {
                 }
 
                 this.editor.getDoc().setValue(templateStr);
-                this.storeCurrent();
-                this.save();
+                this.codeFilesProvider.createFile(result["filename"], templateStr);
                 this.reload();
+                this.currentFileName = this.selectedCodeFile;
             }
         });
     }

@@ -11,6 +11,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CodeFilesProviderService} from "./code-files-provider.service";
 import { AddCodeFileModalComponent } from './add-code-file-modal/add-code-file-modal.component';
 import {FormsModule} from "@angular/forms";
+import { ParentAutoresizeDirective } from './parent-autoresize.directive';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import {FormsModule} from "@angular/forms";
     ],
     declarations: [
         CodeEditorComponent,
-        AddCodeFileModalComponent
+        AddCodeFileModalComponent,
+        ParentAutoresizeDirective
     ],
     providers: [
         CodeFilesProviderService
