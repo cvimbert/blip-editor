@@ -16,14 +16,11 @@
             <mat-icon aria-label="Save">save</mat-icon>
         </button>
 
-        <button mat-mini-fab color="primary" (click)="reload()">
-            <mat-icon aria-label="Save">star</mat-icon>
-        </button>
-
         <button *ngIf="selectedCodeFile" mat-mini-fab color="primary" (click)="deleteCurrent()">
             <mat-icon aria-label="Delete">delete_forever</mat-icon>
         </button>
     </div>
+
     <div class="ccontainer">
         <div #editorzone class="editor-zone" [class.invisible]="selectedCodeFile === undefined"></div>
         <div class="game-zone-container">
@@ -34,6 +31,10 @@
                 <mat-form-field >
                     <input type="number" name="height" matInput placeholder="Scene height" [(ngModel)]="sceneHeight" (ngModelChange)="updateSceneSize()">
                 </mat-form-field>
+
+                <button class="reload-button" mat-mini-fab color="primary" (click)="reload()">
+                    <mat-icon aria-label="Save">cached</mat-icon>
+                </button>
             </div>
             <div class="game-zone-wrapper">
                 <div class="game-zone-position-wrapper">

@@ -37,7 +37,7 @@
             {regex: /(?=[A-Za-z0-9]+\s*\(\s*[A-Za-z0-9_-]+\s*\))/, push: "objectSelector"},
             {regex: /(?=[A-Za-z0-9]+\s*->\s*[A-Za-z0-9]+)/, push: "graphLink"},
             {regex: /-?[0-9]+(?:\.[0-9]*)?/, token: "number"},
-            {regex: /"[A-Za-z0-9\/._]+"/, token: "string"},
+            {regex: /"[A-Za-z0-9\/._\-]+"/, token: "string"},
             {regex: /true|false/, token: "number"},
             {regex: /[A-Za-z0-9\/._]+/, token: "variable"}
 

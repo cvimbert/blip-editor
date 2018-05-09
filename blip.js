@@ -54,7 +54,7 @@
         ],
         script: [
             {regex: /}/, push: "group"},
-            {regex: /listen/, token: "keyword", next: "listen"},
+            {regex: /stoplisten|listen/, token: "keyword", next: "listen"},
             {regex: /(?=[A-Za-z0-9]+[ ]+[A-Za-z0-9_-]+[ ]*>[ ]*)/, push: "actionOnObject"}
         ],
         listen: [
