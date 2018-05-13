@@ -74,6 +74,10 @@
         actionArgs: [
             {regex: /[A-Za-z0-9]+[ ]*$/, token: "string", next: "script"},
             {regex: /[A-Za-z0-9]+/, next: "actionArgs"}
-        ]
+        ],
+        meta: {
+            dontIndentStates: ["comment"],
+            lineComment: "//"
+        }
     });
 });
