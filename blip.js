@@ -54,8 +54,8 @@
         ],
         script: [
             {regex: /}/, push: "group"},
-            {regex: /stoplisten|listen/, token: "keyword", next: "listen"},
-            {regex: /(?=[A-Za-z0-9]+[ ]+[A-Za-z0-9_-]+[ ]*>[ ]*)/, push: "actionOnObject"}
+            {regex: /stoplisten|listen|if/, token: "keyword", next: "listen"},
+            {regex: /(?=[A-Za-z0-9]+[ ]+[A-Za-z0-9_-]+[ \t]*>[ \t]*)/, push: "actionOnObject"}
         ],
         listen: [
             {regex: /[A-Za-z0-9]+/, token: "variable", next: "script"}
@@ -67,12 +67,12 @@
             {regex: /[A-Za-z0-9_]+/, token: "variable", next: "action"}
         ],
         action: [
-            {regex: />/, token: "operator", next: "action"},
-            {regex: /[A-Za-z0-9]+[ ]*$/, token: "", push: "script"},
+            {regex: /[ \t]*>[ \t]*/, token: "operator", next: "action"},
+            {regex: /[A-Za-z0-9]+[ \t]*$/, token: "", push: "script"},
             {regex: /[A-Za-z0-9]+/, token: "", push: "actionArgs"}
         ],
         actionArgs: [
-            {regex: /[A-Za-z0-9]+[ ]*$/, token: "string", next: "script"},
+            {regex: /[A-Za-z0-9]+[ \t]*$/, token: "string", next: "script"},
             {regex: /[A-Za-z0-9]+/, next: "actionArgs"}
         ],
         meta: {
