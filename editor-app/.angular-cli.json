@@ -63,6 +63,9 @@
     "component": {},
     "build": {
       "preserveSymlinks": true
+    },
+    "serve": {
+      "port": 4208
     }
   }
 }

@@ -12,6 +12,13 @@ import {CodeFilesProviderService} from "./code-files-provider.service";
 import { AddCodeFileModalComponent } from './add-code-file-modal/add-code-file-modal.component';
 import {FormsModule} from "@angular/forms";
 import { ParentAutoresizeDirective } from './parent-autoresize.directive';
+import { BlocksComponent } from './blocks-test/blocks/blocks.component';
+import { BlockItemComponent } from './blocks-test/block-item/block-item.component';
+import { ItemsBankComponent } from './blocks-test/items-bank/items-bank.component';
+import { BankItemComponent } from './blocks-test/bank-item/bank-item.component';
+import { DropBankComponent } from './blocks-test/drop-bank/drop-bank.component';
+import {BlocksService} from "./blocks-test/blocks.service";
+import { BasicValueModalComponent } from './blocks-test/basic-value-modal/basic-value-modal.component';
 
 @NgModule({
     imports: [
@@ -29,13 +36,21 @@ import { ParentAutoresizeDirective } from './parent-autoresize.directive';
     declarations: [
         CodeEditorComponent,
         AddCodeFileModalComponent,
-        ParentAutoresizeDirective
+        ParentAutoresizeDirective,
+        BlocksComponent,
+        BlockItemComponent,
+        ItemsBankComponent,
+        BankItemComponent,
+        DropBankComponent,
+        BasicValueModalComponent
     ],
     providers: [
-        CodeFilesProviderService
+        CodeFilesProviderService,
+        BlocksService
     ],
     entryComponents: [
-        AddCodeFileModalComponent
+        AddCodeFileModalComponent,
+        BasicValueModalComponent
     ]
 })
 export class CodeEditorModule { }

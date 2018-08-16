@@ -1,0 +1,6 @@
+<div class="content" [style.background-color]="data?.backgroundColor">
+    <div class="main-text" [style.color]="data?.fontColor">
+        {{ data.mainText }}
+    </div>
+</div>
+<br *ngIf="data.lineJump">
