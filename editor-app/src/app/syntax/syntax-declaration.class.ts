@@ -31,7 +31,6 @@ export class SyntaxDeclaration {
         index: number = 0,
         currentRes: SyntaxCheckResult[] = []
     ): boolean {
-        //console.log("check");
 
         let currentNode: SyntaxNode;
 
@@ -41,8 +40,22 @@ export class SyntaxDeclaration {
             currentNode = this.completeSyntaxNodesDictionary[checkedNode];
         }
 
+        if (!blockUnits[index]) {
+            return false;
+        }
+
         // un node ne peut contenir que : list, children ou blockReference, ou nodeType
         if (currentNode.children) {
+
+            for (let key in currentNode.children) {
+                let currentRes: boolean = this.check(blockUnits, currentNode.children[key], index);
+
+                if (currentRes) {
+                    return true;
+                }
+            }
+
+            return false;
 
         } else if (currentNode.list) {
 
@@ -83,6 +96,29 @@ export class SyntaxDeclaration {
             } else {
                 return false;
             }
+        }
+    }
+
+    repetitionIterator(
+        blockUnits: BlockUnit[],
+        checkedNode: SyntaxNode,
+        index: number = 0,
+        currentRes: SyntaxCheckResult[] = [],
+        ) {
+        switch (checkedNode.repetition) {
+
+            case "+":
+                let res = this.check(blockUnits, checkedNode, index)
+                // Une fois ou plus
+                break;
+
+            case "*":
+                // Zero ou plus
+                break;
+
+            case "?":
+                // Zero ou une fois
+
         }
     }
 }

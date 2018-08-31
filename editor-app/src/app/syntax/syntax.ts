@@ -29,7 +29,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         description: "Un petite définition de test",
         children: {
             it1: {
-                children: {
+                list: {
                     a: {
                         blockReference: "a"
                     },
@@ -81,9 +81,6 @@ export const blocksSet1: BlockUnit[] = [
     {
         type: "numberValue",
         value: 89
-    },
-    {
-        type: "dsdsd"
     }
 ];
 
@@ -94,6 +91,17 @@ export const blocksSet2: BlockUnit[] = [
     },
     {
         type: "imageFileReference"
+    }
+];
+
+export const blocksSet3: BlockUnit[] = [
+    {
+        type: "a",
+        value: 45
+    },
+    {
+        type: "b",
+        value: 45
     }
 ];
 

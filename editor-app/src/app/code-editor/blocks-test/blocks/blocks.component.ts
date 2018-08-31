@@ -5,7 +5,10 @@ import {BankItemInterface} from "../bank-item.interface";
 import {BlocksService} from "../blocks.service";
 import {BasicTypes} from "../basic-types.class";
 import {SyntaxDeclaration} from "../../../syntax/syntax-declaration.class";
-import {baseDictionary, blocksDictionary, blocksSet1, blocksSet2, nodesDictionary} from "../../../syntax/syntax";
+import {
+    baseDictionary, blocksDictionary, blocksSet1, blocksSet2, blocksSet3,
+    nodesDictionary
+} from "../../../syntax/syntax";
 
 @Component({
     selector: 'app-blocks',
@@ -33,6 +36,10 @@ export class BlocksComponent implements OnInit {
 
         let res2: boolean = declaration.check(blocksSet2, nodesDictionary["SpriteDefinition"]);
         console.log(res2);
+
+
+        let res3: boolean = declaration.check(blocksSet3, nodesDictionary["TestDefinition"]);
+        console.log(res3);
 
         this.bankItems = [
             {
