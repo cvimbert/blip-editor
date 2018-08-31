@@ -66,8 +66,8 @@ export class BlocksService {
 
         let endIndex: number = 0;
 
-        definition.children.forEach((child: Leave, index: number) => {
-            if (data[index] && child.targetType === data[index].type) {
+        definition.children.forEach((child: Definition, index: number) => {
+            if (data[index] && child.target === data[index].type) {
                 endIndex = index;
             }
         });

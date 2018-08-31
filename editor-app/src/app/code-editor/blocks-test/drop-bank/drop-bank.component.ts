@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BlocksService} from "../blocks.service";
 import {BlockData} from "../block-data.class";
 
@@ -7,7 +7,7 @@ import {BlockData} from "../block-data.class";
     templateUrl: './drop-bank.component.html',
     styleUrls: ['./drop-bank.component.scss']
 })
-export class DropBankComponent implements OnInit {
+export class DropBankComponent implements OnInit, OnDestroy {
 
     @Input("type") type: string;
     @Input("name") name: string;
@@ -25,6 +25,10 @@ export class DropBankComponent implements OnInit {
     }
 
     addBlock() {
+
+    }
+
+    ngOnDestroy() {
 
     }
 }

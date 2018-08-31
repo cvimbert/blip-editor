@@ -4,6 +4,8 @@ import {BlockDataInterface} from "../block-data.interface";
 import {BankItemInterface} from "../bank-item.interface";
 import {BlocksService} from "../blocks.service";
 import {BasicTypes} from "../basic-types.class";
+import {SyntaxDeclaration} from "../../../syntax/syntax-declaration.class";
+import {baseDictionary, blocksDictionary, blocksSet1, blocksSet2, nodesDictionary} from "../../../syntax/syntax";
 
 @Component({
     selector: 'app-blocks',
@@ -21,7 +23,33 @@ export class BlocksComponent implements OnInit {
         private blocksService: BlocksService
     ) {
 
+        const declaration: SyntaxDeclaration = new SyntaxDeclaration(
+            [baseDictionary, nodesDictionary],
+            blocksDictionary
+        );
+
+        let res1: boolean = declaration.check(blocksSet1, nodesDictionary["SpriteDefinition"]);
+        console.log(res1);
+
+        let res2: boolean = declaration.check(blocksSet2, nodesDictionary["SpriteDefinition"]);
+        console.log(res2);
+
         this.bankItems = [
+            {
+                type: "t1",
+                backgroundColor: "#1fa4ff",
+                fontColor: "#ffffff"
+            },
+            {
+                type: "t2",
+                backgroundColor: "#1fa4ff",
+                fontColor: "#ffffff"
+            },
+            {
+                type: "t3",
+                backgroundColor: "#1fa4ff",
+                fontColor: "#ffffff"
+            },
             {
                 type: "imageFileReference",
                 backgroundColor: "#1fa4ff",

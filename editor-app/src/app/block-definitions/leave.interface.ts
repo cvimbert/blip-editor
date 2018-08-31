@@ -1,7 +1,9 @@
-export interface Leave {
-    targetType: string;
+import {Definition} from "./definition.interface";
 
-    // un seul type de tip pour le moment
+export interface Leave {
+    target: string | Definition;
+
+    // un seul nodeType de tip pour le moment
     tip?: string;
     errorTip?: string;
 }
