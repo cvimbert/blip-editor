@@ -13,7 +13,7 @@ export interface SyntaxNode {
     blockReference?: string;
 
     // nom temporaire
-    repetition?: string;
+    iterator?: string;
 
     breakAfter?: boolean;
     indentAfter?: boolean;

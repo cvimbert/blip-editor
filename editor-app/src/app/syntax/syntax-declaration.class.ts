@@ -25,11 +25,11 @@ export class SyntaxDeclaration {
 
     }
 
-    check(
+    unitCheck(
         blockUnits: BlockUnit[],
         checkedNode: string | SyntaxNode,
         index: number = 0,
-        currentRes: SyntaxCheckResult[] = []
+        resultStack: SyntaxCheckResult[] = []
     ): number {
 
         let currentNode: SyntaxNode;
@@ -48,7 +48,7 @@ export class SyntaxDeclaration {
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: number = this.checkWithIteration(blockUnits, <SyntaxNode>currentNode.children[key], index);
+                let currentRes: number = this.check(blockUnits, <SyntaxNode>currentNode.children[key], index, resultStack);
 
                 if (currentRes > -1) {
                     return currentRes;
@@ -64,13 +64,16 @@ export class SyntaxDeclaration {
 
             for (let key in currentNode.list) {
                 // on check l'intégralité des children, qui doivent tous retourner true
-                let currRes: number = this.checkWithIteration(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
+                let currRes: number = this.check(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, resultStack);
 
                 if (currRes === -1) {
                     return -1;
                 }
 
-                res[key] = currRes;
+                if (currRes !== subIndex) {
+                    res[key] = currRes - 1;
+                }
+
                 subIndex = currRes;
             }
 
@@ -83,15 +86,10 @@ export class SyntaxDeclaration {
         } else if (currentNode.nodeType) {
 
         } else if (currentNode.blockReference) {
-
             if (blockUnits[index].type === currentNode.blockReference) {
 
-                // à supprimer définitivement, ne devrait plus être utile
-                /*if (blockUnits.length > index + 1) {
-                    return this.check(blockUnits, null, index + 1);
-                } else {
-                    return true;
-                }*/
+                resultStack.push(new SyntaxCheckResult(currentNode.blockReference, index));
+                console.log(resultStack);
 
                 return index + 1;
             } else {
@@ -100,25 +98,24 @@ export class SyntaxDeclaration {
         }
     }
 
-    checkWithIteration(
+    check(
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
-        currentRes: SyntaxCheckResult[] = [],
+        resultStack: SyntaxCheckResult[] = [],
         ) {
-        switch (checkedNode.repetition) {
+        switch (checkedNode.iterator) {
             case "+":
             case "*":
-                // Zero ou plus
-                // si on a zéro, n'invalide pas l'expression, on retourne l'index (même si 0)
-                let res: number = this.check(blockUnits, checkedNode, index);
+
+                let res: number = this.unitCheck(blockUnits, checkedNode, index, resultStack);
 
                 if (res === -1) {
-                    return checkedNode.repetition === "*" ? index : -1;
+                    return checkedNode.iterator === "*" ? index : -1;
                 }
 
                 while (res !== -1) {
-                    let newRes: number = this.check(blockUnits, checkedNode, res);
+                    let newRes: number = this.unitCheck(blockUnits, checkedNode, res, resultStack);
 
                     if (newRes === -1) {
                         return res;
@@ -134,19 +131,19 @@ export class SyntaxDeclaration {
                 // Zero ou une fois
 
                 // il doit y avoir une première fois ou non
-                res = this.check(blockUnits, checkedNode, index);
+                res = this.unitCheck(blockUnits, checkedNode, index, resultStack);
 
                 if (res === -1) {
                     return index;
                 }
 
                 // mais pas de seconde !
-                let nres: number = this.check(blockUnits, checkedNode, res);
+                let nres: number = this.unitCheck(blockUnits, checkedNode, res, resultStack);
 
                 return (nres > -1) ? -1 : res;
 
             default:
-                return this.check(blockUnits, checkedNode, index);
+                return this.unitCheck(blockUnits, checkedNode, index, resultStack);
         }
     }
 }

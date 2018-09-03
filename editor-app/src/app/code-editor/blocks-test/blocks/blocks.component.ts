@@ -31,13 +31,13 @@ export class BlocksComponent implements OnInit {
             blocksDictionary
         );
 
-        //let res1: number = declaration.checkWithIteration(blocksSet1, nodesDictionary["SpriteDefinition"]);
+        //let res1: number = declaration.check(blocksSet1, nodesDictionary["SpriteDefinition"]);
         //console.log(res1);
 
-        //let res2: number = declaration.checkWithIteration(blocksSet2, nodesDictionary["SpriteDefinition"]);
+        //let res2: number = declaration.check(blocksSet2, nodesDictionary["SpriteDefinition"]);
         //console.log(res2);
 
-        let res3: number = declaration.checkWithIteration(blocksSet3, nodesDictionary["TestDefinition"]);
+        let res3: number = declaration.check(blocksSet3, nodesDictionary["TestDefinition"]);
         console.log(res3);
 
         this.bankItems = [

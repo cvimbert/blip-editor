@@ -24,7 +24,7 @@ export class BankItemComponent implements OnInit {
 
         let draggable = Draggable.create(this.content.nativeElement, {
             onDragEnd: () => {
-                // on check si on touche une zone de drop
+                // on unitCheck si on touche une zone de drop
                 for (let bank of this.blocksService.dropBanks) {
                     if (draggable.hitTest(bank.dropBank.nativeElement)) {
                         this.blocksService.registerDropAction(bank.name, this.data.type, bank.type);

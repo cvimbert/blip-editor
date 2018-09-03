@@ -35,7 +35,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                     },
                     b: {
                         blockReference: "b",
-                        repetition: "+"
+                        repetition: "*"
                     },
                     c: {
                         blockReference: "c"
