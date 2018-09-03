@@ -34,7 +34,11 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                         blockReference: "a"
                     },
                     b: {
-                        blockReference: "b"
+                        blockReference: "b",
+                        repetition: "+"
+                    },
+                    c: {
+                        blockReference: "c"
                     }
                 }
             },
@@ -100,7 +104,7 @@ export const blocksSet3: BlockUnit[] = [
         value: 45
     },
     {
-        type: "b",
+        type: "c",
         value: 45
     }
 ];

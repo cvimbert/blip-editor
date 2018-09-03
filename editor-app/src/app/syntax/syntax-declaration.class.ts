@@ -30,7 +30,7 @@ export class SyntaxDeclaration {
         checkedNode: string | SyntaxNode,
         index: number = 0,
         currentRes: SyntaxCheckResult[] = []
-    ): boolean {
+    ): number {
 
         let currentNode: SyntaxNode;
 
@@ -41,43 +41,44 @@ export class SyntaxDeclaration {
         }
 
         if (!blockUnits[index]) {
-            return false;
+            return -1;
         }
 
         // un node ne peut contenir que : list, children ou blockReference, ou nodeType
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: boolean = this.check(blockUnits, currentNode.children[key], index);
+                let currentRes: number = this.checkWithIteration(blockUnits, <SyntaxNode>currentNode.children[key], index);
 
-                if (currentRes) {
-                    return true;
+                if (currentRes > -1) {
+                    return currentRes;
                 }
             }
 
-            return false;
+            return -1;
 
         } else if (currentNode.list) {
 
-            let res: { [key: string]: boolean } = {};
+            let res: { [key: string]: number } = {};
             let subIndex: number = index;
 
             for (let key in currentNode.list) {
                 // on check l'intégralité des children, qui doivent tous retourner true
-                let currRes: boolean = this.check(blockUnits, currentNode.list[key], subIndex);
+                let currRes: number = this.checkWithIteration(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
 
-                if (!currRes) {
-                    return false;
+                if (currRes === -1) {
+                    return -1;
                 }
 
                 res[key] = currRes;
-                subIndex++;
+                subIndex = currRes;
             }
 
             console.log(res);
 
             // attention, pas forcément bon dans sa logique
-            return !blockUnits[subIndex];
+            //return subIndex;
+            return !blockUnits[subIndex] ? subIndex : -1;
 
         } else if (currentNode.nodeType) {
 
@@ -92,33 +93,60 @@ export class SyntaxDeclaration {
                     return true;
                 }*/
 
-                return true;
+                return index + 1;
             } else {
-                return false;
+                return -1;
             }
         }
     }
 
-    repetitionIterator(
+    checkWithIteration(
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
         currentRes: SyntaxCheckResult[] = [],
         ) {
         switch (checkedNode.repetition) {
-
             case "+":
-                let res = this.check(blockUnits, checkedNode, index)
-                // Une fois ou plus
-                break;
-
             case "*":
                 // Zero ou plus
-                break;
+                // si on a zéro, n'invalide pas l'expression, on retourne l'index (même si 0)
+                let res: number = this.check(blockUnits, checkedNode, index);
+
+                if (res === -1) {
+                    return checkedNode.repetition === "*" ? index : -1;
+                }
+
+                while (res !== -1) {
+                    let newRes: number = this.check(blockUnits, checkedNode, res);
+
+                    if (newRes === -1) {
+                        return res;
+                    }
+
+                    res = newRes;
+                }
+
+                // à vérifier, mais à priori pas utile
+                return res;
 
             case "?":
                 // Zero ou une fois
 
+                // il doit y avoir une première fois ou non
+                res = this.check(blockUnits, checkedNode, index);
+
+                if (res === -1) {
+                    return index;
+                }
+
+                // mais pas de seconde !
+                let nres: number = this.check(blockUnits, checkedNode, res);
+
+                return (nres > -1) ? -1 : res;
+
+            default:
+                return this.check(blockUnits, checkedNode, index);
         }
     }
 }
