@@ -9,6 +9,7 @@ import {
     baseDictionary, blocksDictionary, blocksSet1, blocksSet2, blocksSet3,
     nodesDictionary
 } from "../../../syntax/syntax";
+import {SyntaxCheckResult} from "../../../syntax/syntax-check-result.class";
 
 @Component({
     selector: 'app-blocks',
@@ -37,7 +38,7 @@ export class BlocksComponent implements OnInit {
         //let res2: number = declaration.check(blocksSet2, nodesDictionary["SpriteDefinition"]);
         //console.log(res2);
 
-        let res3: number = declaration.check(blocksSet3, nodesDictionary["TestDefinition"]);
+        let res3: SyntaxCheckResult = declaration.check(blocksSet3, nodesDictionary["TestDefinition"]);
         console.log(res3);
 
         this.bankItems = [

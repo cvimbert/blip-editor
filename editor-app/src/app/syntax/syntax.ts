@@ -35,7 +35,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                     },
                     b: {
                         blockReference: "b",
-                        repetition: "*"
+                        iterator: "*"
                     },
                     c: {
                         blockReference: "c"
@@ -102,6 +102,12 @@ export const blocksSet3: BlockUnit[] = [
     {
         type: "a",
         value: 45
+    },
+    {
+        type: "b",
+    },
+    {
+        type: "b",
     },
     {
         type: "c",
