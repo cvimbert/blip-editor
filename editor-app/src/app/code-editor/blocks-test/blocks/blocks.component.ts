@@ -38,7 +38,7 @@ export class BlocksComponent implements OnInit {
         //let res2: number = declaration.check(blocksSet2, nodesDictionary["SpriteDefinition"]);
         //console.log(res2);
 
-        let res3: SyntaxCheckResult = declaration.check(blocksSet3, nodesDictionary["TestDefinition"]);
+        let res3: SyntaxCheckResult[] = declaration.check(blocksSet1, nodesDictionary["SpriteDefinition"]);
         console.log(res3);
 
         this.bankItems = [

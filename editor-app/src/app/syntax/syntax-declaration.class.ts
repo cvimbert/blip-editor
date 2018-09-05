@@ -46,12 +46,12 @@ export class SyntaxDeclaration {
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: SyntaxCheckResult = this.check(blockUnits, <SyntaxNode>currentNode.children[key], index);
+                let currentRes: SyntaxCheckResult[] = this.check(blockUnits, <SyntaxNode>currentNode.children[key], index);
 
                 if (currentRes !== null) {
                     // on met à jour le résultat
-                    result.index = currentRes.index;
-                    result.pushChild(key, currentRes);
+                    result.index = currentRes[currentRes.length - 1].index;
+                    result.pushChildrenArray(key, currentRes);
                     return result;
                 }
             }
@@ -64,17 +64,17 @@ export class SyntaxDeclaration {
 
             for (let key in currentNode.list) {
                 // on check l'intégralité des children, qui doivent tous retourner true
-                let currRes: SyntaxCheckResult = this.check(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
+                let currRes: SyntaxCheckResult[] = <SyntaxCheckResult[]>this.check(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
 
                 if (currRes === null) {
                     return null;
                 }
 
-                if (currRes.index !== subIndex) {
-                    result.pushChild(key, currRes);
+                if (currRes[currRes.length - 1].index !== subIndex) {
+                    result.pushChildrenArray(key, currRes);
                 }
 
-                subIndex = currRes.index;
+                subIndex = currRes[currRes.length - 1].index;
             }
 
             // attention, pas forcément bon dans sa logique
@@ -93,6 +93,7 @@ export class SyntaxDeclaration {
 
                 // et la valeur !!
                 // result.value
+                result.value = blockUnits[index].value;
 
                 result.index++;
                 return result;
@@ -102,52 +103,78 @@ export class SyntaxDeclaration {
         }
     }
 
+    unitCheckAndCreation(
+        blockUnits: BlockUnit[],
+        checkedNode: SyntaxNode,
+        index: number = 0
+    ): SyntaxCheckResult {
+        let res: SyntaxCheckResult = this.unitCheck(blockUnits, checkedNode, index);
+
+        if (res) {
+            if (checkedNode.definitionClass) {
+                res.resultDefinitionObject = new checkedNode.definitionClass(res);
+            }
+        }
+
+        return res;
+    }
+
     check(
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0
-        ): SyntaxCheckResult {
+        ): SyntaxCheckResult[] {
 
         switch (checkedNode.iterator) {
             case "+":
             case "*":
 
-                let res: SyntaxCheckResult = this.unitCheck(blockUnits, checkedNode, index);
+                let resArr: SyntaxCheckResult[] = [];
+
+                let res: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index);
 
                 if (res === null) {
-                    return checkedNode.iterator === "*" ? res : null;
+                    return checkedNode.iterator === "*" ? resArr : null;
                 }
 
+                resArr.push(res);
+
                 while (res !== null) {
-                    let newRes: SyntaxCheckResult = this.unitCheck(blockUnits, checkedNode, res.index);
+                    let newRes: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index);
 
                     if (newRes === null) {
-                        return res;
+                        return resArr;
                     }
 
+                    //res.addChild(newRes);
+                    resArr.push(newRes);
                     res = newRes;
                 }
 
                 // à vérifier, mais à priori pas utile
-                return res;
+                return resArr;
 
             case "?":
                 // Zero ou une fois
+                resArr = [];
 
                 // il doit y avoir une première fois ou non
-                res = this.unitCheck(blockUnits, checkedNode, index);
+                res = this.unitCheckAndCreation(blockUnits, checkedNode, index);
 
                 if (res === null) {
-                    return res;
+                    return resArr;
                 }
 
-                // mais pas de seconde !
-                let nres: SyntaxCheckResult = this.unitCheck(blockUnits, checkedNode, res.index);
+                resArr.push(res);
 
-                return (nres !== null) ? null : res;
+                // mais pas de seconde !
+                let nres: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index);
+
+                return (nres !== null) ? null : resArr;
 
             default:
-                return this.unitCheck(blockUnits, checkedNode, index);
+                let resVal: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index);
+                return resVal === null ? null : [resVal];
         }
     }
 }

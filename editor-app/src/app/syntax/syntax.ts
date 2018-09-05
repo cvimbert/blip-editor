@@ -30,22 +30,23 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         children: {
             it1: {
                 list: {
-                    a: {
+                    it_a: {
                         blockReference: "a"
                     },
-                    b: {
+                    it_b: {
                         blockReference: "b",
                         iterator: "*"
                     },
-                    c: {
+                    it_c: {
                         blockReference: "c"
                     }
                 }
             },
             it2: {
                 children: {
-                    c: {
-                        blockReference: "c"
+                    it_d: {
+                        blockReference: "d",
+                        iterator: "*"
                     }
                 }
             }
@@ -76,7 +77,8 @@ export const nodesDictionary: SyntaxNodesDictionary = {
 
 export const blocksSet1: BlockUnit[] = [
     {
-        type: "imageFileReference"
+        type: "imageFileReference",
+        value: "Chemin vers le fichier machin"
     },
     {
         type: "numberValue",
@@ -105,13 +107,19 @@ export const blocksSet3: BlockUnit[] = [
     },
     {
         type: "b",
+        value: 89
     },
     {
         type: "b",
+        value: 70
+    },
+    {
+        type: "b",
+        value: 89
     },
     {
         type: "c",
-        value: 45
+        value: 77
     }
 ];
 
