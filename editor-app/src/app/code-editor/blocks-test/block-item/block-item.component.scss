@@ -1,15 +1,53 @@
 .content {
   display: inline-block;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 4px;
+  padding-right: 4px;
   font-family: Arial;
   height: 50px;
   //background-color: green;
   //box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
   margin-top: 4px;
   margin-bottom: 4px;
+  //background-color: green;
+  font-weight:  bold;
 
   cursor: grab;
+
+  &.files {
+    .main-text {
+      color: red;
+    }
+  }
+
+  &.condition {
+    .main-text {
+      color: green;
+    }
+  }
+
+  &.basic {
+    .main-text {
+      color: orange;
+    }
+  }
+
+  &.basic-values {
+    .main-text {
+      color: blueviolet;
+    }
+  }
+
+  &.object {
+    .main-text {
+      color: green;
+    }
+  }
+
+  &.code {
+    .main-text {
+      color: blue;
+    }
+  }
 }
 
 .main-text {

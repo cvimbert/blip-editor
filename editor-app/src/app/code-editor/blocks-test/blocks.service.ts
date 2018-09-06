@@ -8,6 +8,8 @@ import {BasicValueModalComponent} from "./basic-value-modal/basic-value-modal.co
 import {Definition} from "../../block-definitions/definition.interface";
 import {definitions} from "../../block-definitions/definitions";
 import {Leave} from "../../block-definitions/leave.interface";
+import {blocksDictionary, nodesDictionary} from "../../syntax/syntax";
+import {BlockDefinition} from "../../syntax/block-definition.interface";
 
 @Injectable()
 export class BlocksService {
@@ -29,16 +31,15 @@ export class BlocksService {
 
     registerDropAction(bankName: string, blockName: string, bankType: string) {
 
-        const bankItemDefinition: BankItemInterface = this.bankItemsByName[blockName];
+        // TODO: à supprimer
+        const bankItemDefinition: BlockDefinition = blocksDictionary[blockName];
 
         const item: BlockData = new BlockData({
-            backgroundColor: bankItemDefinition.backgroundColor,
-            fontColor: bankItemDefinition.fontColor,
-            lineJump: bankItemDefinition.lineBreak || false,
-            type: bankItemDefinition.type
+            type: bankItemDefinition.type,
+            text: bankItemDefinition.text
         });
 
-        if (bankItemDefinition.valueProvider) {
+        /*if (bankItemDefinition.valueProvider) {
             bankItemDefinition.valueProvider().subscribe((value: any) => {
                 if (value !== undefined) {
                     item.value = value;
@@ -49,31 +50,16 @@ export class BlocksService {
                     this.dropped[bankName].push(item);
                 }
             });
-        } else {
-            item.mainText = bankItemDefinition.type;
+        } else {*/
+            // item.mainText = bankItemDefinition.type;
             this.dropped[bankName].push(item);
-        }
+        //}
 
         this.verifySyntax(bankName, bankType);
     }
 
     verifySyntax(bankName: string, bankType: string): number {
-
-        // très temporaire
-
-        const definition: Definition = definitions[bankType];
-        const data: BlockData[] = this.dropped[bankName];
-
-        let endIndex: number = 0;
-
-        definition.children.forEach((child: Definition, index: number) => {
-            if (data[index] && child.target === data[index].type) {
-                endIndex = index;
-            }
-        });
-
-        console.log(endIndex);
-        return endIndex;
+        return;
     }
 
     openValueModal(type: string): Observable<any> {

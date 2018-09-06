@@ -6,74 +6,232 @@ import {SpriteDefinition} from "./definitions/sprite-definition.class";
 export const blocksDictionary: BlockDefinitionsDictionary = {
     imageFileReference: {
         type: "files",
-        useTextProvider: true
+        text: "image"
     },
     numberValue: {
-        type: "basicValues",
-        useTextProvider: true,
-        useValueProvider: true
+        type: "basic-values",
+        text: "number"
+    },
+    ifOpener: {
+        type: "basic",
+        text: "if ("
+    },
+    leftParenthesis: {
+        type: "basic",
+        text: "("
+    },
+    rightParenthesis: {
+        type: "basic",
+        text: ")"
+    },
+    leftBracket: {
+        type: "basic",
+        text: "{"
+    },
+    rightBracket: {
+        type: "basic",
+        text: "}"
+    },
+    conditionBlock: {
+        type: "condition",
+        text: "condition"
+    },
+    elseIfOpener: {
+        type: "basic",
+        text: "else if ("
+    },
+    elseBlock: {
+        type: "basic",
+        text: "else"
+    },
+    codeBlock: {
+        type: "code",
+        text: "codeBlock"
     }
 };
 
 export const baseDictionary: SyntaxNodesDictionary = {
+
+};
+
+export const nodesDictionary: SyntaxNodesDictionary = {
     ImageFileReference: {
         blockReference: "imageFileReference"
     },
     NumberValue: {
         blockReference: "numberValue"
-    }
-};
-
-export const nodesDictionary: SyntaxNodesDictionary = {
-    TestDefinition: {
-        description: "Un petite définition de test",
-        children: {
-            it1: {
-                list: {
-                    it_a: {
-                        blockReference: "a"
-                    },
-                    it_b: {
-                        blockReference: "b",
-                        iterator: "*"
-                    },
-                    it_c: {
-                        blockReference: "c"
-                    }
-                }
-            },
-            it2: {
-                children: {
-                    it_d: {
-                        blockReference: "d",
-                        iterator: "*"
-                    }
-                }
-            }
-        }
     },
     SpriteDefinition: {
         description: "Une définition de sprite...",
         definitionClass: SpriteDefinition,
         list: {
             fileref: {
-                //nodeType: "ImageFileReference",
                 blockReference: "imageFileReference",
                 name: "Fichier image"
             },
             xpos: {
-                //nodeType: "NumberValue",
                 blockReference: "numberValue",
                 name: "X"
             },
             ypos: {
-                //nodeType: "NumberValue",
                 blockReference: "numberValue",
                 name: "Y"
             }
         }
+    },
+    If: {
+        description: "Un if de base",
+        list: {
+            startIf: {
+                blockReference: "ifOpener",
+            },
+            booleanEvaluation: {
+                nodeType: "BooleanEvaluation",
+                name: "Evaluation booléenne"
+            },
+            endIf: {
+                blockReference: "rightParenthesis"
+            },
+            openBlock: {
+                blockReference: "leftBracket"
+            },
+            codeBlock: {
+                nodeType: "CodeBlock"
+            },
+            closeBlock: {
+                blockReference: "rightBracket"
+            },
+            elseIfComplement: {
+                nodeType: "ElseIfComplement",
+                iterator: "*"
+            },
+            elseComplement: {
+                nodeType: "ElseComplement",
+                iterator: "*"
+            }
+        }
+    },
+    BooleanEvaluation: {
+        description: "L'évaluation booléenne",
+        children: {
+            condition: {
+                blockReference: "conditionBlock"
+            }
+        }
+    },
+    ElseIfComplement: {
+        description: "",
+        list: {
+            elseIfOpener: {
+                blockReference: "elseIfOpener"
+            },
+            condition: {
+                nodeType: "BooleanEvaluation"
+            },
+            endIf: {
+                blockReference: "rightParenthesis"
+            },
+            openBlock: {
+                blockReference: "leftBracket"
+            },
+            codeBlock: {
+                nodeType: "CodeBlock"
+            },
+            closeBlock: {
+                blockReference: "rightBracket"
+            }
+        }
+    },
+    ElseComplement: {
+        description: "",
+        list: {
+            else: {
+                blockReference: "elseBlock"
+            },
+            openBlock: {
+                blockReference: "leftBracket"
+            },
+            codeBlock: {
+                nodeType: "CodeBlock"
+            },
+            closeBlock: {
+                blockReference: "rightBracket"
+            },
+        }
+    },
+    CodeBlock: {
+        blockReference: "codeBlock"
     }
 };
+
+export const ifTest: BlockUnit[] = [
+    {
+        type: "ifOpener"
+    },
+    {
+        type: "conditionBlock"
+    },
+    {
+        type: "rightParenthesis"
+    },
+    {
+        type: "leftBracket"
+    },
+    {
+        type: "codeBlock"
+    },
+    {
+        type: "rightBracket"
+    },
+    {
+        type: "elseIfOpener"
+    },
+    {
+        type: "conditionBlock"
+    },
+    {
+        type: "rightParenthesis"
+    },
+    {
+        type: "leftBracket"
+    },
+    {
+        type: "codeBlock"
+    },
+    {
+        type: "rightBracket"
+    },
+    {
+        type: "elseIfOpener"
+    },
+    {
+        type: "conditionBlock"
+    },
+    {
+        type: "rightParenthesis"
+    },
+    {
+        type: "leftBracket"
+    },
+    {
+        type: "codeBlock"
+    },
+    {
+        type: "rightBracket"
+    },
+    {
+        type: "elseBlock"
+    },
+    {
+        type: "leftBracket"
+    },
+    {
+        type: "codeBlock"
+    },
+    {
+        type: "rightBracket"
+    }
+];
 
 export const blocksSet1: BlockUnit[] = [
     {
@@ -86,115 +244,6 @@ export const blocksSet1: BlockUnit[] = [
     },
     {
         type: "numberValue",
-        value: 89
-    }
-];
-
-export const blocksSet2: BlockUnit[] = [
-    {
-        type: "numberValue",
-        value: 45
-    },
-    {
-        type: "imageFileReference"
-    }
-];
-
-export const blocksSet3: BlockUnit[] = [
-    {
-        type: "a",
-        value: 45
-    },
-    {
-        type: "b",
-        value: 89
-    },
-    {
-        type: "b",
-        value: 70
-    },
-    {
-        type: "b",
-        value: 89
-    },
-    {
-        type: "c",
         value: 77
     }
 ];
-
-// déclaration "absolue"
-const syntaxDeclaration = {
-    // déclaration d'une feuille de l'arbre
-    "imageFile": {
-        description: "Une référence à un fichier image",
-        blockRef: "idDuBloc"
-    },
-    "sprite-declaration": {
-        list: {
-            // id simple
-            "file-ref": "imageFile",
-            "x-pos": "numberValue",
-
-            // possibilité de passer d'autres infos dans un objet ??
-            "y-pos": {
-                type: "numberValue",
-                breakAfter: true,
-                description: "La position du sprite sur x",
-                name: "X"
-            }
-        },
-        breakAfter: true
-    },
-    "code-line-2": {
-        nodes: {
-            if: {
-                type: "if",
-                repetition: "*",
-                breakAfter: true
-            },
-            "simple-action": {
-                description: "desc",
-                list: {
-                    "action-name": {
-                        type: "simpleAction"
-                    },
-                    // si pas de nodeType, c'est la clé qui le remplace
-                    "line-sep": {
-                        type: "line-separator"
-                    }
-                },
-                breakAfter: true
-            }
-        }
-    },
-    "code-block": {
-        children: {
-            // indexation des children par clé, pour récupération des données après parsing
-            "code-lines": "code-line*"
-        }
-    },
-    "code-line": {
-        children: [
-            "if*",
-            ["simple-action*", "line-ending"]
-        ]
-    },
-    "simple-action": {
-        children: [
-            "command-name"
-        ]
-    },
-    "if": {
-        children: [
-            [
-                "if-opening",
-                "boolean-evaluation",
-                "closing-parenthesis",
-                "opening-bracket",
-                "code-block",
-                "closing-bracket"
-            ]
-        ]
-    }
-};

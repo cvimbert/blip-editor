@@ -23,6 +23,20 @@ export class SyntaxDeclaration {
 
     }
 
+    parse(
+        blockUnits: BlockUnit[],
+        checkedNodeName: string,
+    ): SyntaxCheckResult[] {
+
+        const res: SyntaxCheckResult[] = this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName]);
+
+        if (res) {
+            return (res[res.length - 1].index < blockUnits.length) ? null : res;
+        } else {
+            return null;
+        }
+    }
+
     unitCheck(
         blockUnits: BlockUnit[],
         checkedNode: string | SyntaxNode,
@@ -46,7 +60,7 @@ export class SyntaxDeclaration {
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: SyntaxCheckResult[] = this.check(blockUnits, <SyntaxNode>currentNode.children[key], index);
+                let currentRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.children[key], index);
 
                 if (currentRes !== null) {
                     // on met à jour le résultat
@@ -64,26 +78,38 @@ export class SyntaxDeclaration {
 
             for (let key in currentNode.list) {
                 // on check l'intégralité des children, qui doivent tous retourner true
-                let currRes: SyntaxCheckResult[] = <SyntaxCheckResult[]>this.check(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
+                let currRes: SyntaxCheckResult[] = <SyntaxCheckResult[]>this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex);
 
                 if (currRes === null) {
                     return null;
                 }
 
-                if (currRes[currRes.length - 1].index !== subIndex) {
-                    result.pushChildrenArray(key, currRes);
+                if (currRes.length > 0) {
+                    if (currRes[currRes.length - 1].index !== subIndex) {
+                        result.pushChildrenArray(key, currRes);
+                    }
+
+                    subIndex = currRes[currRes.length - 1].index;
                 }
 
-                subIndex = currRes[currRes.length - 1].index;
             }
 
             // attention, pas forcément bon dans sa logique
             //return subIndex;
             result.index = subIndex;
-            return result;
+            //return result;
+
+            // TODO: déplacer la vérification de fin de check à un endroit plus global
+            /*if (blockUnits[subIndex]) {
+                return null;
+            } else {*/
+                return result;
+            //}
             //return !blockUnits[subIndex] ? subIndex : null;
 
         } else if (currentNode.nodeType) {
+
+            return this.unitCheck(blockUnits, this.completeSyntaxNodesDictionary[<string>currentNode.nodeType], index);
 
         } else if (currentNode.blockReference) {
 
@@ -119,7 +145,7 @@ export class SyntaxDeclaration {
         return res;
     }
 
-    check(
+    baseCheck(
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0
@@ -146,13 +172,11 @@ export class SyntaxDeclaration {
                         return resArr;
                     }
 
-                    //res.addChild(newRes);
                     resArr.push(newRes);
                     res = newRes;
                 }
 
-                // à vérifier, mais à priori pas utile
-                return resArr;
+                break;
 
             case "?":
                 // Zero ou une fois

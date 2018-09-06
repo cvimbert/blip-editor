@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {BankItemInterface} from "../bank-item.interface";
 import {BlocksService} from "../blocks.service";
+import {blocksDictionary} from "../../../syntax/syntax";
 
 declare var require: any;
 const Draggable = require("gsap/Draggable");
@@ -16,11 +17,16 @@ export class BankItemComponent implements OnInit {
     @Input() data: BankItemInterface;
     @ViewChild("content") content: ElementRef;
 
+    text: string;
+
     constructor(
         private blocksService: BlocksService
     ) {}
 
     ngOnInit() {
+
+        // TODO: temporaire, à supprimer dès que possible
+        this.text = blocksDictionary[this.data.type].text;
 
         let draggable = Draggable.create(this.content.nativeElement, {
             onDragEnd: () => {
@@ -30,7 +36,7 @@ export class BankItemComponent implements OnInit {
                         this.blocksService.registerDropAction(bank.name, this.data.type, bank.type);
                         break;
                     } else {
-                        // pas dans une bank
+                        // pas dans une bank, on ne fait rien
                     }
                 }
 
