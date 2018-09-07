@@ -93,13 +93,17 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "rightParenthesis"
             },
             openBlock: {
-                blockReference: "leftBracket"
+                blockReference: "leftBracket",
+                breakAfter: true
             },
             codeBlock: {
-                nodeType: "CodeBlock"
+                nodeType: "CodeBlock",
+                iterator: "*",
+                breakAfter: true
             },
             closeBlock: {
-                blockReference: "rightBracket"
+                blockReference: "rightBracket",
+                breakAfter: true
             },
             elseIfComplement: {
                 nodeType: "ElseIfComplement",
@@ -132,13 +136,17 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "rightParenthesis"
             },
             openBlock: {
-                blockReference: "leftBracket"
+                blockReference: "leftBracket",
+                breakAfter: true
             },
             codeBlock: {
-                nodeType: "CodeBlock"
+                nodeType: "CodeBlock",
+                iterator: "*",
+                breakAfter: true
             },
             closeBlock: {
-                blockReference: "rightBracket"
+                blockReference: "rightBracket",
+                breakAfter: true
             }
         }
     },
@@ -148,14 +156,18 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             else: {
                 blockReference: "elseBlock"
             },
+
             openBlock: {
-                blockReference: "leftBracket"
+                blockReference: "leftBracket",
+                breakAfter: true
             },
             codeBlock: {
-                nodeType: "CodeBlock"
+                nodeType: "CodeBlock",
+                iterator: "*"
             },
             closeBlock: {
-                blockReference: "rightBracket"
+                blockReference: "rightBracket",
+                breakAfter: true
             },
         }
     },

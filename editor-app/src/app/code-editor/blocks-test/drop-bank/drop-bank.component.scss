@@ -3,3 +3,13 @@
   min-height: 100px;
   margin-top: 10px;
 }
+
+.validity-displayer {
+  width: 30px;
+  height: 30px;
+  background-color: red;
+
+  &.valid {
+    background-color: green;
+  }
+}

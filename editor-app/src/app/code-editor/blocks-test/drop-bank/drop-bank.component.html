@@ -1,3 +1,4 @@
 <div class="drop-bank" #dropbank>
+    <div class="validity-displayer" [class.valid]="isValid"></div>
     <block-item *ngFor="let blockData of data" [data]="blockData"></block-item>
 </div>

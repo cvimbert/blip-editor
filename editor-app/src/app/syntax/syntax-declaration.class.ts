@@ -28,6 +28,7 @@ export class SyntaxDeclaration {
         checkedNodeName: string,
     ): SyntaxCheckResult[] {
 
+        console.log(this.completeSyntaxNodesDictionary[checkedNodeName]);
         const res: SyntaxCheckResult[] = this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName]);
 
         if (res) {

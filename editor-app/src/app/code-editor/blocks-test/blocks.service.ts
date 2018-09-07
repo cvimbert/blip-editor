@@ -8,24 +8,33 @@ import {BasicValueModalComponent} from "./basic-value-modal/basic-value-modal.co
 import {Definition} from "../../block-definitions/definition.interface";
 import {definitions} from "../../block-definitions/definitions";
 import {Leave} from "../../block-definitions/leave.interface";
-import {blocksDictionary, nodesDictionary} from "../../syntax/syntax";
+import {baseDictionary, blocksDictionary, nodesDictionary} from "../../syntax/syntax";
 import {BlockDefinition} from "../../syntax/block-definition.interface";
+import {SyntaxDeclaration} from "../../syntax/syntax-declaration.class";
 
 @Injectable()
 export class BlocksService {
 
     bankItemsByName: {[key: string]: BankItemInterface} = {};
     dropBanks: DropBankComponent[] = [];
+    dropBanksByName: {[key: string]: DropBankComponent} = {};
 
     dropped: {[key: string]: BlockData[]} = {};
 
+    syntaxDeclaration: SyntaxDeclaration;
+
     constructor(
         private dialog: MatDialog
-    ) { }
+    ) {
+        this.syntaxDeclaration = new SyntaxDeclaration([baseDictionary, nodesDictionary], blocksDictionary);
+    }
 
     registerDropBank(component: DropBankComponent): BlockData[] {
         this.dropBanks.push(component);
+        this.dropBanksByName[component.name] = component;
         this.dropped[component.name] = [];
+
+
         return this.dropped[component.name];
     }
 
@@ -35,8 +44,9 @@ export class BlocksService {
         const bankItemDefinition: BlockDefinition = blocksDictionary[blockName];
 
         const item: BlockData = new BlockData({
-            type: bankItemDefinition.type,
-            text: bankItemDefinition.text
+            class: bankItemDefinition.type,
+            text: bankItemDefinition.text,
+            type: blockName
         });
 
         /*if (bankItemDefinition.valueProvider) {
@@ -59,6 +69,8 @@ export class BlocksService {
     }
 
     verifySyntax(bankName: string, bankType: string): number {
+        console.log(this.dropped[bankName], this.syntaxDeclaration);
+        this.dropBanksByName[bankName].isValid = !!this.syntaxDeclaration.parse(this.dropped[bankName], bankType);
         return;
     }
 

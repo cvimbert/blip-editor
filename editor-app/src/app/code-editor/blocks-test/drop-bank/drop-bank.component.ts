@@ -15,6 +15,7 @@ export class DropBankComponent implements OnInit, OnDestroy {
     @ViewChild("dropbank") dropBank: ElementRef;
 
     data: BlockData[] = [];
+    isValid: boolean = false;
 
     constructor(
         private blocksService: BlocksService

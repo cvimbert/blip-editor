@@ -32,8 +32,8 @@ export class BlocksComponent implements OnInit {
             blocksDictionary
         );
 
-        let ifRes: SyntaxCheckResult[] = declaration.parse(ifTest, "If");
-        console.log(ifRes);
+        /*let ifRes: SyntaxCheckResult[] = declaration.parse(ifTest, "If");
+        console.log(ifRes);*/
 
         for (let key in blocksDictionary) {
             this.bankItems.push(
