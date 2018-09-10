@@ -1,3 +1,5 @@
+import {SyntaxNode} from "./syntax-node.interface";
+
 export class SyntaxCheckResult {
 
     children: {[key: string]: SyntaxCheckResult[]} = {};
@@ -6,10 +8,16 @@ export class SyntaxCheckResult {
     startIndex: number;
     resultDefinitionObject: any;
 
+    errorNode: SyntaxNode;
+
     constructor(
         public index: number
     ) {
         this.startIndex = index;
+    }
+
+    setError(node: SyntaxNode) {
+        this.errorNode = node;
     }
 
     pushChildrenArray(key: string, arr: SyntaxCheckResult[]) {

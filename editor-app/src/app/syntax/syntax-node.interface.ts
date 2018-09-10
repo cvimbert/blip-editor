@@ -12,9 +12,9 @@ export interface SyntaxNode {
     list?: {[key: string]: (string | SyntaxNode)};
     blockReference?: string;
 
-    // nom temporaire
     iterator?: string;
 
+    // plus ici, à déplacer
     breakAfter?: boolean;
     indentAfter?: boolean;
 

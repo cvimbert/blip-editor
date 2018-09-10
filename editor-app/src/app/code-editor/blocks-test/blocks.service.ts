@@ -12,6 +12,7 @@ import {baseDictionary, blocksDictionary, nodesDictionary} from "../../syntax/sy
 import {BlockDefinition} from "../../syntax/block-definition.interface";
 import {SyntaxDeclaration} from "../../syntax/syntax-declaration.class";
 import {SyntaxNode} from "../../syntax/syntax-node.interface";
+import {SyntaxCheckCompleteResult} from "../../syntax/syntax-check-complete-result.interface";
 
 @Injectable()
 export class BlocksService {
@@ -70,9 +71,11 @@ export class BlocksService {
     }
 
     verifySyntax(bankName: string, bankType: string): number {
-        let stack: SyntaxNode[] = [];
-        this.dropBanksByName[bankName].isValid = !!this.syntaxDeclaration.parse(this.dropped[bankName], bankType, stack);
-        console.log(stack);
+        const res: SyntaxCheckCompleteResult = this.syntaxDeclaration.parseWithErrorManagement(this.dropped[bankName], bankType);
+        this.dropBanksByName[bankName].isValid = !!res.result;
+
+        console.log(res.result || res.error);
+
         return;
     }
 

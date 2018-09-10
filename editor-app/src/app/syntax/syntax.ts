@@ -124,7 +124,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         }
     },
     ElseIfComplement: {
-        description: "",
+        description: "Else if complement",
         list: {
             elseIfOpener: {
                 blockReference: "elseIfOpener"
@@ -151,7 +151,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         }
     },
     ElseComplement: {
-        description: "",
+        description: "Else complement",
         list: {
             else: {
                 blockReference: "elseBlock"
@@ -172,6 +172,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         }
     },
     CodeBlock: {
+        description: "code block",
         blockReference: "codeBlock"
     }
 };
