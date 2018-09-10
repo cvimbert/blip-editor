@@ -11,6 +11,7 @@ import {Leave} from "../../block-definitions/leave.interface";
 import {baseDictionary, blocksDictionary, nodesDictionary} from "../../syntax/syntax";
 import {BlockDefinition} from "../../syntax/block-definition.interface";
 import {SyntaxDeclaration} from "../../syntax/syntax-declaration.class";
+import {SyntaxNode} from "../../syntax/syntax-node.interface";
 
 @Injectable()
 export class BlocksService {
@@ -69,8 +70,9 @@ export class BlocksService {
     }
 
     verifySyntax(bankName: string, bankType: string): number {
-        console.log(this.dropped[bankName], this.syntaxDeclaration);
-        this.dropBanksByName[bankName].isValid = !!this.syntaxDeclaration.parse(this.dropped[bankName], bankType);
+        let stack: SyntaxNode[] = [];
+        this.dropBanksByName[bankName].isValid = !!this.syntaxDeclaration.parse(this.dropped[bankName], bankType, stack);
+        console.log(stack);
         return;
     }
 
