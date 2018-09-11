@@ -48,7 +48,8 @@ export class BlocksService {
         const item: BlockData = new BlockData({
             class: bankItemDefinition.type,
             text: bankItemDefinition.text,
-            type: blockName
+            type: blockName,
+            breakAfter: !!bankItemDefinition.breakAfter
         });
 
         /*if (bankItemDefinition.valueProvider) {
@@ -75,6 +76,13 @@ export class BlocksService {
         this.dropBanksByName[bankName].isValid = !!res.result;
 
         console.log(res.result || res.error);
+
+        // reset errors
+        this.dropped[bankName].forEach(data => data.errorAfter = false);
+
+        if (!res.result) {
+            this.dropped[bankName][res.error.end].errorAfter = true;
+        }
 
         return;
     }

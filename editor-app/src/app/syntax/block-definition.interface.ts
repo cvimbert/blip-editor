@@ -6,4 +6,8 @@ export interface BlockDefinition {
     class?: string;
     useValueProvider?: boolean;
     useTextProvider?: boolean;
+
+    // ici ?
+    breakAfter?: boolean;
+    indentAfter?: boolean;
 }

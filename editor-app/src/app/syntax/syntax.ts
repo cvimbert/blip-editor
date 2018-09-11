@@ -26,11 +26,13 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     },
     leftBracket: {
         type: "basic",
-        text: "{"
+        text: "{",
+        breakAfter: true
     },
     rightBracket: {
         type: "basic",
-        text: "}"
+        text: "}",
+        breakAfter: true
     },
     conditionBlock: {
         type: "condition",
@@ -46,7 +48,8 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     },
     codeBlock: {
         type: "code",
-        text: "codeBlock"
+        text: "codeBlock",
+        breakAfter: true
     }
 };
 
@@ -94,16 +97,16 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             openBlock: {
                 blockReference: "leftBracket",
-                breakAfter: true
+                // breakAfter: true
             },
             codeBlock: {
                 nodeType: "CodeBlock",
                 iterator: "*",
-                breakAfter: true
+                // breakAfter: true
             },
             closeBlock: {
                 blockReference: "rightBracket",
-                breakAfter: true
+                // breakAfter: true
             },
             elseIfComplement: {
                 nodeType: "ElseIfComplement",
@@ -137,16 +140,16 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             openBlock: {
                 blockReference: "leftBracket",
-                breakAfter: true
+                // breakAfter: true
             },
             codeBlock: {
                 nodeType: "CodeBlock",
                 iterator: "*",
-                breakAfter: true
+                // breakAfter: true
             },
             closeBlock: {
                 blockReference: "rightBracket",
-                breakAfter: true
+                // breakAfter: true
             }
         }
     },
@@ -159,7 +162,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
 
             openBlock: {
                 blockReference: "leftBracket",
-                breakAfter: true
+                // breakAfter: true
             },
             codeBlock: {
                 nodeType: "CodeBlock",
@@ -167,7 +170,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             closeBlock: {
                 blockReference: "rightBracket",
-                breakAfter: true
+                // breakAfter: true
             },
         }
     },

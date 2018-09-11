@@ -15,8 +15,8 @@ export interface SyntaxNode {
     iterator?: string;
 
     // plus ici, à déplacer
-    breakAfter?: boolean;
-    indentAfter?: boolean;
+    // breakAfter?: boolean;
+    // indentAfter?: boolean;
 
     definitionClass?: any;
 }

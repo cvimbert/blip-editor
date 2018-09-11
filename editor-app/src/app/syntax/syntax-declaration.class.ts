@@ -99,14 +99,10 @@ export class SyntaxDeclaration {
 
                 if (currRes === null) {
                     if (subIndex > index) {
-                        //console.log("Erreur dans liste ->", index, subIndex, currentNode, key);
-
                         error.node = currentNode;
                         error.start = index;
                         error.end = subIndex - 1;
                         error.key = key;
-                        /*result.setError(currentNode);
-                        return result;*/
                     }
 
                     return null;
