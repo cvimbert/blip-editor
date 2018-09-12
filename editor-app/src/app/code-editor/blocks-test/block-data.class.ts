@@ -8,6 +8,7 @@ export class BlockData {
     value: any;
     class: string;
     errorAfter: boolean = true;
+    inactive: boolean = false;
 
     constructor(data: BlockDefinition) {
         this.mainText = data.text;

@@ -47,7 +47,6 @@ export class BankItemComponent implements OnInit {
                     },
                     clearProps: "all"
                 });
-
             }
         })[0];
     }

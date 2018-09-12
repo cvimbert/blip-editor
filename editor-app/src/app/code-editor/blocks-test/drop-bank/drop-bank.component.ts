@@ -1,6 +1,7 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {BlocksService} from "../blocks.service";
 import {BlockData} from "../block-data.class";
+import {BlockItemComponent} from "../block-item/block-item.component";
 
 @Component({
     selector: 'app-drop-bank',
@@ -13,6 +14,7 @@ export class DropBankComponent implements OnInit, OnDestroy {
     @Input("name") name: string;
 
     @ViewChild("dropbank") dropBank: ElementRef;
+    @ViewChildren("blockitem") blockItems: QueryList<BlockItemComponent>;
 
     data: BlockData[] = [];
     isValid: boolean = false;

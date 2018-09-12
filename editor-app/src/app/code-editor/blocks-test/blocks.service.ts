@@ -13,6 +13,7 @@ import {BlockDefinition} from "../../syntax/block-definition.interface";
 import {SyntaxDeclaration} from "../../syntax/syntax-declaration.class";
 import {SyntaxNode} from "../../syntax/syntax-node.interface";
 import {SyntaxCheckCompleteResult} from "../../syntax/syntax-check-complete-result.interface";
+import {BlockItemComponent} from "./block-item/block-item.component";
 
 @Injectable()
 export class BlocksService {
@@ -21,7 +22,9 @@ export class BlocksService {
     dropBanks: DropBankComponent[] = [];
     dropBanksByName: {[key: string]: DropBankComponent} = {};
 
+    // TODO: regrouper ces deux objets dans un seul
     dropped: {[key: string]: BlockData[]} = {};
+    droppedComponent: {[key: string]: BlockItemComponent[]} = {};
 
     syntaxDeclaration: SyntaxDeclaration;
 
@@ -34,8 +37,9 @@ export class BlocksService {
     registerDropBank(component: DropBankComponent): BlockData[] {
         this.dropBanks.push(component);
         this.dropBanksByName[component.name] = component;
-        this.dropped[component.name] = [];
 
+        this.dropped[component.name] = [];
+        this.droppedComponent[component.name] = [];
 
         return this.dropped[component.name];
     }
@@ -66,6 +70,13 @@ export class BlocksService {
         } else {*/
             // item.mainText = bankItemDefinition.type;
             this.dropped[bankName].push(item);
+
+            // obligé de déférer pour récupérer la liste de composants
+            // on peut peut-être faire autrement
+            setTimeout(() => {
+                this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();
+            });
+
         //}
 
         this.verifySyntax(bankName, bankType);
@@ -77,12 +88,19 @@ export class BlocksService {
 
         console.log(res.result || res.error);
 
-        // reset errors
-        this.dropped[bankName].forEach(data => data.errorAfter = false);
+        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données , dans l"objet de
 
-        if (!res.result) {
+        // reset errors
+        this.dropped[bankName].forEach(data => {
+            data.errorAfter = false;
+            data.inactive = false;
+        });
+
+        if (!res.result && res.error) {
             this.dropped[bankName][res.error.end].errorAfter = true;
+            this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
         }
+
 
         return;
     }

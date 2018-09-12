@@ -1,8 +1,8 @@
-<div class="content {{ data.class }}">
+<div #content class="content {{ data.class }}" [class.inactive]="data.inactive" [class.hit]="hit">
     <div class="main-text">
         {{ data.mainText }}
     </div>
 
 </div>
-<div class="error-displayer" *ngIf="data.errorAfter">></div>
+<div class="error-displayer" *ngIf="data.errorAfter">X</div>
 <br *ngIf="data.lineJump">
