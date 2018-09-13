@@ -32,15 +32,30 @@ export class BlocksService {
         private dialog: MatDialog
     ) {
         this.syntaxDeclaration = new SyntaxDeclaration([baseDictionary, nodesDictionary], blocksDictionary);
+
+        let blocksData: string = localStorage.getItem("blocks");
+
+        if (blocksData) {
+            this.dropped = JSON.parse(blocksData);
+        }
     }
 
     registerDropBank(component: DropBankComponent): BlockData[] {
         this.dropBanks.push(component);
         this.dropBanksByName[component.name] = component;
 
-        this.dropped[component.name] = [];
+        if (!this.dropped[component.name]) {
+            this.dropped[component.name] = [];
+        } else {
+            // voir comment supprimer de manière clean ce timeout
+            setTimeout(() => {
+                this.droppedComponent[component.name] = component.blockItems.toArray();
+            });
+        }
+
         this.droppedComponent[component.name] = [];
 
+        this.verifySyntax(component.name, component.type);
         return this.dropped[component.name];
     }
 
@@ -119,11 +134,25 @@ export class BlocksService {
         this.verifySyntax(bankName, bankType);
     }
 
+    moveBlockAtLastPosition(index: number, bankName: string, bankType: string) {
+        this.moveBlockToIndex(index, this.dropped[bankName].length, bankName, bankType);
+    }
+
+    removeBlockAtIndex(index: number, bankName: string, bankType: string) {
+        this.dropped[bankName].splice(index, 1);
+        this.verifySyntax(bankName, bankType);
+    }
+
     openValueModal(type: string): Observable<any> {
         return this.dialog.open(BasicValueModalComponent, {
             width: "500px",
             data: this.bankItemsByName[type]
         }).beforeClose();
+    }
+
+
+    save() {
+        localStorage.setItem("blocks", JSON.stringify(this.dropped));
     }
 
 }

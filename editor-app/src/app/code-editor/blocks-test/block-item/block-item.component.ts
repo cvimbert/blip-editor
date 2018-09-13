@@ -51,12 +51,15 @@ export class BlockItemComponent implements OnInit {
 
                 if (hitResult) {
                     if (hitResult.intersectionArea > 0) {
-                        console.log("ici");
                         this.blocksService.moveBlockToIndex(this.index, hitResult.hitObject.index + 1, this.bankName, this.bankType);
                     } else {
-                        console.log("là");
                         this.blocksService.moveBlockToIndex(this.index, hitResult.hitObject.index, this.bankName, this.bankType);
                     }
+                }
+                else if (this.draggable.hitTest(this.blocksService.dropBanksByName[this.bankName].dropBank.nativeElement)) {
+                    this.blocksService.moveBlockAtLastPosition(this.index, this.bankName, this.bankType);
+                } else {
+                    this.blocksService.removeBlockAtIndex(this.index, this.bankName, this.bankType);
                 }
 
                 TweenLite.set(this.content.nativeElement, {

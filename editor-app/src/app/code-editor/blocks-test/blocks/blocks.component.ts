@@ -48,4 +48,8 @@ export class BlocksComponent implements OnInit {
     ngOnInit() {
     }
 
+    save() {
+        this.blocksService.save();
+    }
+
 }
