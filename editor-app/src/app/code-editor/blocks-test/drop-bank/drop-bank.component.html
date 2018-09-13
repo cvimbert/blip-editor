@@ -1,4 +1,4 @@
 <div class="drop-bank" #dropbank>
     <div class="validity-displayer" [class.valid]="isValid"></div>
-    <block-item #blockitem *ngFor="let blockData of data" [bankName]="name" [data]="blockData"></block-item>
+    <block-item #blockitem *ngFor="let blockData of data; index as i" [index]="i" [bankType]="type" [bankName]="name" [data]="blockData"></block-item>
 </div>

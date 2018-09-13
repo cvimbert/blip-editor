@@ -11,11 +11,11 @@
   //background-color: green;
 
   &.hit {
-    font-weight:  bold;
+    //font-weight:  bold;
   }
 
   &.inactive {
-    opacity: 0.2;
+    opacity: 1;
   }
 
   cursor: grab;
@@ -61,6 +61,21 @@
   color: white;
   font-size: 23px;
   line-height: 52px;
+}
+
+.left-hit, .right-hit {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 21px;
+  vertical-align: text-bottom;
+}
+
+.left-hit {
+
+}
+
+.right-hit {
+
 }
 
 .error-displayer {

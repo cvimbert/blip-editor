@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {BlockData} from "../block-data.class";
 import {BlocksService} from "../blocks.service";
+import {HitResult} from "../hit-result.interface";
 
 declare var require: any;
 const Draggable = require("gsap/Draggable");
@@ -16,62 +17,45 @@ export class BlockItemComponent implements OnInit {
     @Input() data: BlockData;
     @ViewChild("content") content: ElementRef;
     @Input("bankName") bankName: string;
+    @Input("index") index: number;
+    @Input("bankType") bankType: string;
 
     hit: boolean = false;
+    hitOnRight: boolean = false;
+    hitOnLeft: boolean = false;
+
+    draggable: any;
 
     constructor(
         private blocksService: BlocksService
     ) { }
 
     ngOnInit() {
-        const draggable = Draggable.create(this.content.nativeElement, {
+
+        this.draggable = Draggable.create(this.content.nativeElement, {
             onDrag: () => {
-                for (let elem of this.blocksService.droppedComponent[this.bankName]) {
-                    elem.hit = false;
-                }
+                this.resetHitValues();
 
-                let maxHitArea: number = 0;
-                let hitObject: BlockItemComponent;
+                const hitResult: HitResult = this.getIntersectingBlock();
 
-                for (let elem of this.blocksService.droppedComponent[this.bankName]) {
-                    const hit: boolean = draggable.hitTest(elem.content.nativeElement);
-
-                    if (hit) {
-                        const toDrop: Object = this.content.nativeElement.getBoundingClientRect();
-                        const target: Object = elem.content.nativeElement.getBoundingClientRect();
-
-                        const hitArea: number = this.getBoundingRectIntersectionArea(toDrop, target);
-
-                        if (Math.abs(hitArea) > maxHitArea) {
-                            hitObject = elem;
-                            maxHitArea = Math.abs(hitArea);
-                        }
-                    }
-                }
-
-                if (hitObject) {
-                    hitObject.hit = true;
+                if (hitResult) {
+                    hitResult.hitObject.hit = true;
+                    hitResult.hitObject.hitOnRight = hitResult.intersectionArea > 0;
+                    hitResult.hitObject.hitOnLeft = hitResult.intersectionArea <= 0;
                 }
             },
             onDragEnd: (evt: PointerEvent) => {
-                for (let elem of this.blocksService.droppedComponent[this.bankName]) {
-                    elem.hit = false;
+                this.resetHitValues();
 
-                    // le hitTest ne sera peut-être plus nécessaire après coup
-                    if (draggable.hitTest(elem.content.nativeElement)) {
-                        const toDrop: Object = this.content.nativeElement.getBoundingClientRect();
-                        const target: Object = elem.content.nativeElement.getBoundingClientRect();
+                const hitResult: HitResult = this.getIntersectingBlock();
 
-                        if (toDrop["left"] > target["left"] + (target["width"] / 2)) {
-                            console.log("drop on right");
-                        }
-
-                        if (toDrop["right"] <= target["left"] + (target["width"] / 2)) {
-                            console.log("drop on left");
-                        }
-
-
-                        break;
+                if (hitResult) {
+                    if (hitResult.intersectionArea > 0) {
+                        console.log("ici");
+                        this.blocksService.moveBlockToIndex(this.index, hitResult.hitObject.index + 1, this.bankName, this.bankType);
+                    } else {
+                        console.log("là");
+                        this.blocksService.moveBlockToIndex(this.index, hitResult.hitObject.index, this.bankName, this.bankType);
                     }
                 }
 
@@ -86,17 +70,57 @@ export class BlockItemComponent implements OnInit {
         })[0];
     }
 
-    getBoundingRectIntersectionArea(rect1: any, rect2: any): number {
+    resetHitValues() {
+        for (let elem of this.blocksService.droppedComponent[this.bankName]) {
+            elem.hit = false;
+            elem.hitOnLeft = false;
+            elem.hitOnRight = false;
+        }
+    }
+
+    getIntersectingBlock(): HitResult {
+        let maxHitArea: number = 0;
+        let hitObject: BlockItemComponent;
+        let maxIndex: number = 0;
+
+        let index: number = 0;
+
+        for (let elem of this.blocksService.droppedComponent[this.bankName]) {
+            const hit: boolean = this.draggable.hitTest(elem.content.nativeElement);
+
+            if (hit) {
+                const toDrop: Object = this.content.nativeElement.getBoundingClientRect();
+                const target: Object = elem.content.nativeElement.getBoundingClientRect();
+
+                const hitArea: number = this.getBoundingRectIntersectionAreaWithXFactor(toDrop, target);
+
+                if (Math.abs(hitArea) > Math.abs(maxHitArea)) {
+                    hitObject = elem;
+                    maxHitArea = hitArea;
+                    maxIndex = index;
+                }
+            }
+
+            index++;
+        }
+
+        return hitObject ? {
+            hitObject: hitObject,
+            intersectionArea: maxHitArea,
+            index: maxIndex
+        } : null;
+    }
+
+    getBoundingRectIntersectionAreaWithXFactor(rect1: any, rect2: any): number {
         const xa: number = rect1.right - rect2.right;
         const xb: number = rect1.left - rect2.left;
 
-        const f: number = Math.min(xa, xb);
-
-        const fact: number = (f > 0) ? 1 : -1;
+        const xf: number = Math.min(xa, xb);
+        const f: number = (xf > 0) ? 1 : -1;
 
         const x_overlap: number = Math.max(0, Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
         const y_overlap: number = Math.max(0, Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
 
-        return x_overlap * y_overlap * fact;
+        return x_overlap * y_overlap * f;
     }
 }

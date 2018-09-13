@@ -1,8 +1,9 @@
+<div class="left-hit" *ngIf="hitOnLeft">|</div>
 <div #content class="content {{ data.class }}" [class.inactive]="data.inactive" [class.hit]="hit">
     <div class="main-text">
         {{ data.mainText }}
     </div>
-
 </div>
+<div class="right-hit" *ngIf="hitOnRight">|</div>
 <div class="error-displayer" *ngIf="data.errorAfter">X</div>
 <br *ngIf="data.lineJump">

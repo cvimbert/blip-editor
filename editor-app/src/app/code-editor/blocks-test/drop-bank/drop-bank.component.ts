@@ -16,7 +16,7 @@ export class DropBankComponent implements OnInit, OnDestroy {
     @ViewChild("dropbank") dropBank: ElementRef;
     @ViewChildren("blockitem") blockItems: QueryList<BlockItemComponent>;
 
-    data: BlockData[] = [];
+    //data: BlockData[] = [];
     isValid: boolean = false;
 
     constructor(
@@ -24,7 +24,11 @@ export class DropBankComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.data = this.blocksService.registerDropBank(this);
+        this.blocksService.registerDropBank(this);
+    }
+
+    get data(): BlockData[] {
+        return this.blocksService.dropped[this.name];
     }
 
     addBlock() {

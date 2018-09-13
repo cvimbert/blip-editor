@@ -88,21 +88,35 @@ export class BlocksService {
 
         console.log(res.result || res.error);
 
-        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données , dans l"objet de
-
+        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données
         // reset errors
+
         this.dropped[bankName].forEach(data => {
             data.errorAfter = false;
             data.inactive = false;
         });
 
         if (!res.result && res.error) {
-            this.dropped[bankName][res.error.end].errorAfter = true;
-            this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
+            if (this.dropped[bankName][res.error.end]) {
+                this.dropped[bankName][res.error.end].errorAfter = true;
+                this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
+            } else {
+                console.log("Erreur non gérée à vérifier", res.error);
+            }
         }
 
-
         return;
+    }
+
+    moveBlockToIndex(from: number, to: number, bankName: string, bankType: string) {
+        if (from !== to) {
+            const list: BlockData[] = this.dropped[bankName];
+            const moved: BlockData = list.splice(from, 1)[0];
+
+            list.splice(to - ((to > from) ? 1: 0), 0, moved);
+        }
+
+        this.verifySyntax(bankName, bankType);
     }
 
     openValueModal(type: string): Observable<any> {
