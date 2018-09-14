@@ -13,6 +13,7 @@ export interface SyntaxNode {
     blockReference?: string;
 
     iterator?: string;
+    error?: string;
 
     // plus ici, à déplacer
     // breakAfter?: boolean;

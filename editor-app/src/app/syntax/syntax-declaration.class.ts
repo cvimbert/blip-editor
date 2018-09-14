@@ -98,7 +98,7 @@ export class SyntaxDeclaration {
                 let currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, error);
 
                 if (currRes === null) {
-                    if (subIndex > index) {
+                    if (subIndex > index || subIndex === 0) {
                         error.node = currentNode;
                         error.start = index;
                         error.end = subIndex - 1;

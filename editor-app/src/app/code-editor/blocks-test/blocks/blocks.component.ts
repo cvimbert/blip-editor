@@ -52,4 +52,7 @@ export class BlocksComponent implements OnInit {
         this.blocksService.save();
     }
 
+    clear() {
+        this.blocksService.clear();
+    }
 }

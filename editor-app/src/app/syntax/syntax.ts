@@ -6,11 +6,13 @@ import {SpriteDefinition} from "./definitions/sprite-definition.class";
 export const blocksDictionary: BlockDefinitionsDictionary = {
     imageFileReference: {
         type: "files",
-        text: "image"
+        text: "image",
+        value: "filepath"
     },
     numberValue: {
         type: "basic-values",
-        text: "number"
+        text: "number",
+        useValueProvider: true
     },
     ifOpener: {
         type: "basic",

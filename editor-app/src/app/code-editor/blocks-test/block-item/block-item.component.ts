@@ -118,12 +118,18 @@ export class BlockItemComponent implements OnInit {
         const xa: number = rect1.right - rect2.right;
         const xb: number = rect1.left - rect2.left;
 
-        const xf: number = Math.min(xa, xb);
-        const f: number = (xf > 0) ? 1 : -1;
+        const hx1: number = rect1.left + rect1.width / 2;
+        const hx2: number = rect2.left + rect2.width / 2;
 
-        const x_overlap: number = Math.max(0, Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
-        const y_overlap: number = Math.max(0, Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
+        const f: number = (hx1 > hx2) ? 1 : -1;
 
-        return x_overlap * y_overlap * f;
+        const xOverlap: number = Math.max(0, Math.min(rect1.right, rect2.right) - Math.max(rect1.left, rect2.left));
+        const yOverlap: number = Math.max(0, Math.min(rect1.bottom, rect2.bottom) - Math.max(rect1.top, rect2.top));
+
+        return xOverlap * yOverlap * f;
+    }
+
+    displayError() {
+        console.log("MSG", this.data.errorText);
     }
 }

@@ -5,4 +5,8 @@ export class SyntaxCheckError {
     start: number;
     end: number;
     key: string;
+
+    getErrorText(): string {
+        return "Pas d'erreur définie";
+    }
 }

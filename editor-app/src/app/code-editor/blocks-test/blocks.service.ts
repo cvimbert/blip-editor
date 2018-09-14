@@ -66,35 +66,43 @@ export class BlocksService {
 
         const item: BlockData = new BlockData({
             class: bankItemDefinition.type,
-            text: bankItemDefinition.text,
+            //text: bankItemDefinition.text,
             type: blockName,
             breakAfter: !!bankItemDefinition.breakAfter
         });
 
-        /*if (bankItemDefinition.valueProvider) {
-            bankItemDefinition.valueProvider().subscribe((value: any) => {
-                if (value !== undefined) {
-                    item.value = value;
+        console.log(bankItemDefinition);
 
-                    const textBuilder: Function | string = bankItemDefinition.textBuilder;
+        if (bankItemDefinition.useValueProvider) {
 
-                    item.mainText = bankItemDefinition.textBuilder(value);
-                    this.dropped[bankName].push(item);
-                }
-            });
-        } else {*/
-            // item.mainText = bankItemDefinition.type;
-            this.dropped[bankName].push(item);
-
-            // obligé de déférer pour récupérer la liste de composants
-            // on peut peut-être faire autrement
-            setTimeout(() => {
-                this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();
+            this.dialog.open(BasicValueModalComponent, {
+                data: {
+                    type: "number"
+                },
+                width: "500px"
+            }).beforeClose().subscribe((value: number) => {
+                item.value = value;
+                item.mainText = String(value);
+                this.validateAndVerify(bankName, bankType);
             });
 
-        //}
+        } else {
+            item.mainText = bankItemDefinition.text;
+            this.validateAndVerify(bankName, bankType);
+        }
 
-        this.verifySyntax(bankName, bankType);
+        this.dropped[bankName].push(item);
+    }
+
+    private validateAndVerify(bankName: string, bankType: string) {
+        // obligé de déférer pour récupérer la liste de composants
+        // on peut peut-être faire autrement
+        setTimeout(() => {
+            this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();
+            this.verifySyntax(bankName, bankType);
+        });
+
+
     }
 
     verifySyntax(bankName: string, bankType: string): number {
@@ -108,16 +116,20 @@ export class BlocksService {
 
         this.dropped[bankName].forEach(data => {
             data.errorAfter = false;
+            data.errorBefore = false;
             data.inactive = false;
         });
 
-        if (!res.result && res.error) {
-            if (this.dropped[bankName][res.error.end]) {
+        if (!res.result && Object.keys(res.error).length > 0) {
+            if (res.error.end > -1) {
                 this.dropped[bankName][res.error.end].errorAfter = true;
-                this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
+                this.dropped[bankName][res.error.end].errorText = res.error.getErrorText();
             } else {
-                console.log("Erreur non gérée à vérifier", res.error);
+                this.dropped[bankName][0].errorBefore = true;
+                this.dropped[bankName][0].errorText = res.error.getErrorText()
             }
+
+            this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
         }
 
         return;
@@ -153,6 +165,20 @@ export class BlocksService {
 
     save() {
         localStorage.setItem("blocks", JSON.stringify(this.dropped));
+    }
+
+    clear() {
+        localStorage.removeItem("blocks");
+
+        for (let key in this.dropped) {
+            this.dropped[key] = [];
+        }
+
+        for (let key in this.droppedComponent) {
+            this.droppedComponent[key] = [];
+        }
+
+        this.dropBanks.forEach(bank => bank.isValid = false);
     }
 
 }

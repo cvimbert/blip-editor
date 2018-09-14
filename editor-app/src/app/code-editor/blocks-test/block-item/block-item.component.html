@@ -1,3 +1,4 @@
+<div class="error-displayer" *ngIf="data.errorBefore" (mouseover)="displayError()">X</div>
 <div class="left-hit" *ngIf="hitOnLeft">|</div>
 <div #content class="content {{ data.class }}" [class.inactive]="data.inactive" [class.hit]="hit">
     <div class="main-text">
@@ -5,5 +6,5 @@
     </div>
 </div>
 <div class="right-hit" *ngIf="hitOnRight">|</div>
-<div class="error-displayer" *ngIf="data.errorAfter">X</div>
+<div class="error-displayer" *ngIf="data.errorAfter" (mouseover)="displayError()">X</div>
 <br *ngIf="data.lineJump">

@@ -16,5 +16,7 @@
 
     <!--<div class="warning mat-subheading-1" *ngIf="!isNameValid">Name already in use</div>-->
     <br>
-    <button [disabled]="value === undefined" mat-raised-button color="primary" (click)="validateValue()">Create</button>
+    <div class="buttons-container">
+        <button [disabled]="value === undefined" mat-raised-button color="primary" (click)="validateValue()">Create</button>
+    </div>
 </form>
