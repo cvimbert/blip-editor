@@ -123,10 +123,10 @@ export class BlocksService {
         if (!res.result && Object.keys(res.error).length > 0) {
             if (res.error.end > -1) {
                 this.dropped[bankName][res.error.end].errorAfter = true;
-                this.dropped[bankName][res.error.end].errorText = res.error.getErrorText();
+                this.dropped[bankName][res.error.end].errorText = res.error.errorText;
             } else {
                 this.dropped[bankName][0].errorBefore = true;
-                this.dropped[bankName][0].errorText = res.error.getErrorText()
+                this.dropped[bankName][0].errorText = res.error.errorText
             }
 
             this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);

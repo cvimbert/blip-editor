@@ -6,7 +6,7 @@ export class SyntaxCheckError {
     end: number;
     key: string;
 
-    getErrorText(): string {
+    get errorText(): string {
         return "Pas d'erreur définie";
     }
 }
