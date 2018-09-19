@@ -2,8 +2,16 @@
 <app-items-bank [items]="bankItems"></app-items-bank>
 </div>
 
-<app-drop-bank type="SpriteDefinition" name="zone1"></app-drop-bank>
-<app-drop-bank type="If" name="zone2"></app-drop-bank>
+<numeric-value-drop-bank type="NumericValue" name="num1"></numeric-value-drop-bank>
+
+<drop-bank type="If" name="zone1"></drop-bank>
+<drop-bank type="If" name="zone2"></drop-bank>
+<drop-bank type="If" name="zone3"></drop-bank>
+<drop-bank type="If" name="zone4"></drop-bank>
+<drop-bank type="If" name="zone5"></drop-bank>
+<drop-bank type="If" name="zone6"></drop-bank>
+
+<drop-bank type="CompleteBooleanExpression" name="zone7"></drop-bank>
 
 <div class="buttons-container">
     <input type="button" value="Save" (click)="save()">

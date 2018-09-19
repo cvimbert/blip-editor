@@ -4,8 +4,8 @@ export interface BlockDefinition {
     text?: string;
     value?: any;
     class?: string;
-    useValueProvider?: boolean;
-    useTextProvider?: boolean;
+    valueProvider?: string;
+    textProvider?: Function;
 
     // ici ?
     breakAfter?: boolean;

@@ -28,14 +28,45 @@ export class SyntaxCheckResult {
         return this.index - 1;
     }
 
-    getValue(path: string): any[] {
+    getValues(path: string): any[] {
         const pathElems: string[] = path.split("/");
         return this.getSyntaxResult(pathElems).map(result => result.value);
     }
 
+    getDefinitions(path: string): any[] {
+        const pathElems: string[] = path.split("/");
+        return this.getSyntaxResult(pathElems)
+            .filter(result => result.resultDefinitionObject !== undefined)
+            .map(result => result.resultDefinitionObject);
+    }
+
+    getFirstDefinition(path: string): any {
+        const definitions: any[] = this.getDefinitions(path);
+        return definitions.length > 0 ? definitions[0]: null;
+    }
+
+    getChildren(path: string): SyntaxCheckResult[] {
+        const pathElems: string[] = path.split("/");
+        return this.getSyntaxResult(pathElems);
+    }
+
+    getFirstChild(path: string): SyntaxCheckResult {
+        return this.getChildren(path)[0];
+    }
+
     getFirstValue(path: string): any {
-        let values: any[] = this.getValue(path);
+        let values: any[] = this.getValues(path);
         return values.length > 0 ? values[0] : null;
+    }
+
+    hasValue(path: string): boolean {
+        let values: any[] = this.getValues(path);
+        return values.length > 0;
+    }
+
+    hasChild(path: string) {
+        let children: SyntaxCheckResult[] = this.getChildren(path);
+        return children.length > 0;
     }
 
     getSyntaxResult(path: string[]): SyntaxCheckResult[] {

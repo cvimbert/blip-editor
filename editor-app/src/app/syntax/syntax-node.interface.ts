@@ -3,7 +3,7 @@ import {BlockDefinition} from "./block-definition.interface";
 export interface SyntaxNode {
 
     // référence directe à un autre node
-    nodeType?: string | SyntaxNode;
+    nodeType?: string;
 
     name?: string;
     description?: string;

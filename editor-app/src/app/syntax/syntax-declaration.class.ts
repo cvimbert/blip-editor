@@ -73,6 +73,11 @@ export class SyntaxDeclaration {
         }
 
         // un node ne peut contenir que : list, children ou blockReference, ou nodeType
+
+        if (!currentNode) {
+            console.log("ici");
+        }
+
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
@@ -152,11 +157,22 @@ export class SyntaxDeclaration {
         index: number = 0,
         error: SyntaxCheckError
     ): SyntaxCheckResult {
-        let res: SyntaxCheckResult = this.unitCheck(blockUnits, checkedNode, index, error);
+
+        let currentNode: SyntaxNode;
+
+        if (checkedNode.nodeType) {
+            currentNode = this.completeSyntaxNodesDictionary[<string>checkedNode.nodeType];
+        } else {
+            currentNode = checkedNode;
+        }
+
+        let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error);
+
+        //console.log(currentNode, res);
 
         if (res) {
-            if (checkedNode.definitionClass) {
-                res.resultDefinitionObject = new checkedNode.definitionClass(res);
+            if (currentNode.definitionClass) {
+                res.resultDefinitionObject = new currentNode.definitionClass(res);
             }
         }
 

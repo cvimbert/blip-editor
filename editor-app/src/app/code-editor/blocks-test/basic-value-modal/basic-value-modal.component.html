@@ -4,7 +4,7 @@
     <mat-form-field class="full-width">
         <mat-select *ngIf="blockType === 'boolean'" name="value" placeholder="Value" [(ngModel)]="value">
             <mat-option value="true">True</mat-option>
-            <mat-option value="true">False</mat-option>
+            <mat-option value="false">False</mat-option>
         </mat-select>
         <input *ngIf="blockType === 'string'" type="text" name="value" matInput placeholder="Value" [(ngModel)]="value" required>
         <input *ngIf="blockType === 'number'" type="number" name="value" matInput placeholder="Value" [(ngModel)]="value" required>

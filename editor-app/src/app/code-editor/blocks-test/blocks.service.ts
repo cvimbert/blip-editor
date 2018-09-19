@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BankItemInterface} from "./bank-item.interface";
-import {DropBankComponent} from "./drop-bank/drop-bank.component";
+import {DropBankComponent} from "./drop-banks/drop-bank/drop-bank.component";
 import {BlockData} from "./block-data.class";
 import {Observable} from "rxjs/Observable";
 import {MatDialog} from "@angular/material";
@@ -73,17 +73,26 @@ export class BlocksService {
 
         console.log(bankItemDefinition);
 
-        if (bankItemDefinition.useValueProvider) {
+        if (bankItemDefinition.valueProvider) {
 
+            // todo: ne devrait pas se trouver ici
             this.dialog.open(BasicValueModalComponent, {
                 data: {
-                    type: "number"
+                    type: bankItemDefinition.valueProvider
                 },
                 width: "500px"
             }).beforeClose().subscribe((value: number) => {
-                item.value = value;
-                item.mainText = String(value);
-                this.validateAndVerify(bankName, bankType);
+                if (value) {
+                    item.value = value;
+
+                    if (bankItemDefinition.textProvider) {
+                        item.mainText = bankItemDefinition.textProvider(value);
+                    } else {
+                        item.mainText = String(value);
+                    }
+
+                    this.validateAndVerify(bankName, bankType);
+                }
             });
 
         } else {
@@ -109,16 +118,24 @@ export class BlocksService {
         const res: SyntaxCheckCompleteResult = this.syntaxDeclaration.parseWithErrorManagement(this.dropped[bankName], bankType);
         this.dropBanksByName[bankName].isValid = !!res.result;
 
-        console.log(res.result || res.error);
+        // console.log(res.result, res.error);
 
-        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données
-        // reset errors
+        if (res.result) {
+            this.dropBanksByName[bankName].onResult.emit(res.result);
+        }
+
+        if (res.error) {
+            this.dropBanksByName[bankName].onError.emit(res.error);
+        }
 
         this.dropped[bankName].forEach(data => {
             data.errorAfter = false;
             data.errorBefore = false;
             data.inactive = false;
         });
+
+        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données
+        // reset errors
 
         if (!res.result && Object.keys(res.error).length > 0) {
             if (res.error.end > -1) {

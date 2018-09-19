@@ -2,6 +2,9 @@ import {SyntaxNodesDictionary} from "./syntax-nodes-dictionary.interface";
 import {BlockDefinitionsDictionary} from "./block-definitions-dictionary.interface";
 import {BlockUnit} from "./block-unit.interface";
 import {SpriteDefinition} from "./definitions/sprite-definition.class";
+import {NumericValueDefinition} from "./definitions/numeric-value-definition.class";
+import {SimpleNumericValueDefinition} from "./definitions/simple-numeric-value-definition.class";
+import {ArithmeticOperatorDefinition} from "./definitions/arithmetic-operator-definition.class";
 
 export const blocksDictionary: BlockDefinitionsDictionary = {
     imageFileReference: {
@@ -12,7 +15,20 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     numberValue: {
         type: "basic-values",
         text: "number",
-        useValueProvider: true
+        valueProvider: "number"
+    },
+    booleanValue: {
+        type: "basic-values",
+        text: "boolean",
+        valueProvider: "boolean"
+    },
+    stringValue: {
+        type: "basic-values",
+        text: "string",
+        valueProvider: "string",
+        textProvider: (value: string) => {
+            return '"' + value + '"';
+        }
     },
     ifOpener: {
         type: "basic",
@@ -52,7 +68,58 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
         type: "code",
         text: "codeBlock",
         breakAfter: true
+    },
+    booleanAnd: {
+        // temp, pour la couleur rouge
+        type: "files",
+        text: "&&",
+    },
+    booleanOr: {
+        // temp, aussi pour la couleur rouge
+        type: "files",
+        text: "||"
+    },
+    less: {
+        type: "basic-values",
+        text: "<"
+    },
+    lessOrEqual: {
+        type: "basic-values",
+        text: "<="
+    },
+    moreOrEqual: {
+        type: "basic-values",
+        text: ">="
+    },
+    more: {
+        type: "basic-values",
+        text: ">"
+    },
+    equal: {
+        type: "basic-values",
+        text: "==="
+    },
+    different: {
+        type: "basic-values",
+        text: "!=="
+    },
+    addition: {
+        type: "files",
+        text: "+"
+    },
+    subtraction: {
+        type: "files",
+        text: "-"
+    },
+    multiplication: {
+        type: "files",
+        text: "*"
+    },
+    division: {
+        type: "files",
+        text: "/"
     }
+
 };
 
 export const baseDictionary: SyntaxNodesDictionary = {
@@ -63,8 +130,189 @@ export const nodesDictionary: SyntaxNodesDictionary = {
     ImageFileReference: {
         blockReference: "imageFileReference"
     },
+    NumericValue: {
+        definitionClass: NumericValueDefinition,
+        list: {
+            baseExp: {
+                nodeType: "BasicNumericValue"
+            },
+            extension: {
+                iterator: "*",
+                list: {
+                    operator: {
+                        nodeType: "ArithmeticOperator"
+                    },
+                    val: {
+                        nodeType: "BasicNumericValue"
+                    }
+                }
+            }
+        }
+    },
+    BasicNumericValue: {
+        description: "Numeric value",
+        definitionClass: SimpleNumericValueDefinition,
+        children: {
+            basic: {
+                blockReference: "numberValue"
+            },
+            inPar: {
+                list: {
+                    opening: {
+                        blockReference: "leftParenthesis"
+                    },
+                    numValue: {
+                        nodeType: "NumericValue"
+                    },
+                    closing: {
+                        blockReference: "rightParenthesis"
+                    }
+                }
+            }
+        }
+    },
+    ArithmeticOperator: {
+        description: "ArithmeticOperator",
+        definitionClass: ArithmeticOperatorDefinition,
+        children: {
+            addition: {
+                blockReference: "addition"
+            },
+            subtraction: {
+                blockReference: "subtraction"
+            },
+            multiplication: {
+                blockReference: "multiplication"
+            },
+            division: {
+                blockReference: "division"
+            }
+        }
+    },
     NumberValue: {
         blockReference: "numberValue"
+    },
+    StringValue: {
+        blockReference: "stringValue"
+    },
+    BooleanValue: {
+        blockReference: "booleanValue"
+    },
+    Value: {
+        description: "value",
+        children: {
+            boolean: {
+                nodeType: "BooleanValue"
+            },
+            string: {
+                nodeType: "StringValue"
+            },
+            number: {
+                nodeType: "NumberValue"
+            }
+        }
+    },
+    ComparisonOperator: {
+        description: "Comparison operator",
+        children: {
+            less: {
+                blockReference: "less"
+            },
+            lessOrEqual: {
+                blockReference: "lessOrEqual"
+            },
+            more: {
+                blockReference: "more"
+            },
+            moreOrEqual: {
+                blockReference: "moreOrEqual"
+            },
+            equal: {
+                blockReference: "equal"
+            },
+            different: {
+                blockReference: "different"
+            }
+        }
+    },
+    CompleteBooleanExpression: {
+        description: "complete boolean expression",
+        list: {
+            baseExp: {
+                nodeType: "BooleanEvaluation"
+            },
+            extension: {
+                nodeType: "BooleanEvaluationExtension",
+                iterator: "*"
+            }
+        }
+    },
+    BooleanOperator: {
+        description: "boolean operator",
+        children: {
+            and: {
+                blockReference: "booleanAnd"
+            },
+            or: {
+                blockReference: "booleanOr"
+            }
+        }
+    },
+    BooleanEvaluation: {
+        description: "boolean evaluation",
+        children: {
+            condition: {
+                blockReference: "conditionBlock"
+            },
+            boolean: {
+                nodeType: "BooleanValue"
+            },
+            numberComparison: {
+                nodeType: "NumbersComparison"
+            },
+            withPar: {
+                nodeType: "BooleanExpressionInParenthesis"
+            }
+        }
+    },
+    BooleanExpressionInParenthesis: {
+        description: "",
+        list: {
+            lp: {
+                blockReference: "leftParenthesis"
+            },
+            exp: {
+                nodeType: "CompleteBooleanExpression"
+            },
+            rp: {
+                blockReference: "rightParenthesis"
+            }
+        }
+    },
+    BooleanEvaluationExtension: {
+        description: "boolean evaluation extension",
+        list: {
+            operator: {
+                nodeType: "BooleanOperator"
+            },
+            expression: {
+                nodeType: "BooleanEvaluation"
+            }
+        }
+    },
+    NumbersComparison: {
+        description: "numbers comparison",
+        list: {
+            value1: {
+                nodeType: "NumberValue"
+            },
+            operator: {
+                nodeType: "ComparisonOperator"
+            },
+            value2: {
+                nodeType: "NumberValue"
+            }
+        }
     },
     SpriteDefinition: {
         description: "Une définition de sprite...",
@@ -91,7 +339,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "ifOpener",
             },
             booleanEvaluation: {
-                nodeType: "BooleanEvaluation",
+                nodeType: "CompleteBooleanExpression",
                 name: "Evaluation booléenne"
             },
             endIf: {
@@ -120,14 +368,6 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             }
         }
     },
-    BooleanEvaluation: {
-        description: "L'évaluation booléenne",
-        children: {
-            condition: {
-                blockReference: "conditionBlock"
-            }
-        }
-    },
     ElseIfComplement: {
         description: "Else if complement",
         list: {
@@ -135,7 +375,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "elseIfOpener"
             },
             condition: {
-                nodeType: "BooleanEvaluation"
+                nodeType: "CompleteBooleanExpression"
             },
             endIf: {
                 blockReference: "rightParenthesis"

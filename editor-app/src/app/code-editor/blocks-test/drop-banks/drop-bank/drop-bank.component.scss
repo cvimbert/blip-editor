@@ -1,0 +1,32 @@
+.drop-bank {
+  background-color: lightgray;
+  min-height: 100px;
+  margin: 6px;
+  margin-left: 12px;
+  margin-right: 0px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  width: 460px;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+}
+
+.validity-displayer {
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  margin-left: -20px;
+
+  &.valid {
+    background-color: green;
+  }
+}
+
+.block-name {
+  position: absolute;
+  top: 6px;
+  left: 38px;
+  font-family: sans-serif;
+  text-decoration: underline;
+}
