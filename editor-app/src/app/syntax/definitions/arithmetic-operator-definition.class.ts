@@ -16,5 +16,7 @@ export class ArithmeticOperatorDefinition {
         } else if (result.hasChild("division")) {
             this.operator = "/";
         }
+
+        console.log("!!!", result);
     }
 }

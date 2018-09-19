@@ -14,9 +14,10 @@ export class BlockData {
 
     constructor(data: BlockDefinition) {
         this.mainText = data.text;
-        this.type = data.type;
+        this.type = data.itemClass;
         this.class = data.class;
         this.lineJump = data.breakAfter;
+        this.value = data.value;
     }
 
 }

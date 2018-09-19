@@ -1,5 +1,6 @@
 export interface BlockDefinition {
-    type: string;
+    type?: string;
+    itemClass: string;
     group?: string;
     text?: string;
     value?: any;

@@ -8,22 +8,22 @@ import {ArithmeticOperatorDefinition} from "./definitions/arithmetic-operator-de
 
 export const blocksDictionary: BlockDefinitionsDictionary = {
     imageFileReference: {
-        type: "files",
+        itemClass: "files",
         text: "image",
         value: "filepath"
     },
     numberValue: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "number",
         valueProvider: "number"
     },
     booleanValue: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "boolean",
         valueProvider: "boolean"
     },
     stringValue: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "string",
         valueProvider: "string",
         textProvider: (value: string) => {
@@ -31,93 +31,101 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
         }
     },
     ifOpener: {
-        type: "basic",
+        itemClass: "basic",
         text: "if ("
     },
     leftParenthesis: {
-        type: "basic",
+        itemClass: "basic",
         text: "("
     },
     rightParenthesis: {
-        type: "basic",
+        itemClass: "basic",
         text: ")"
     },
     leftBracket: {
-        type: "basic",
+        itemClass: "basic",
         text: "{",
         breakAfter: true
     },
     rightBracket: {
-        type: "basic",
+        itemClass: "basic",
         text: "}",
         breakAfter: true
     },
     conditionBlock: {
-        type: "condition",
+        itemClass: "condition",
         text: "condition"
     },
     elseIfOpener: {
-        type: "basic",
+        itemClass: "basic",
         text: "else if ("
     },
     elseBlock: {
-        type: "basic",
+        itemClass: "basic",
         text: "else"
     },
     codeBlock: {
-        type: "code",
+        itemClass: "code",
         text: "codeBlock",
         breakAfter: true
     },
     booleanAnd: {
         // temp, pour la couleur rouge
-        type: "files",
+        itemClass: "files",
         text: "&&",
     },
     booleanOr: {
         // temp, aussi pour la couleur rouge
-        type: "files",
+        itemClass: "files",
         text: "||"
     },
     less: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "<"
     },
     lessOrEqual: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "<="
     },
     moreOrEqual: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: ">="
     },
     more: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: ">"
     },
     equal: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "==="
     },
     different: {
-        type: "basic-values",
+        itemClass: "basic-values",
         text: "!=="
     },
     addition: {
-        type: "files",
-        text: "+"
+        type: "arithmeticOperator",
+        itemClass: "files",
+        text: "+",
+        value: "+"
     },
     subtraction: {
-        type: "files",
-        text: "-"
+        type: "arithmeticOperator",
+        itemClass: "files",
+        text: "-",
+        value: "-"
     },
     multiplication: {
-        type: "files",
-        text: "*"
+        type: "arithmeticOperator",
+        itemClass: "files",
+        text: "*",
+        value: "*"
     },
     division: {
-        type: "files",
-        text: "/"
+        type: "arithmeticOperator",
+        itemClass: "files",
+        text: "/",
+        value: "/"
     }
 
 };
@@ -140,7 +148,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 iterator: "*",
                 list: {
                     operator: {
-                        nodeType: "ArithmeticOperator"
+                        blockReference: "arithmeticOperator"
                     },
                     val: {
                         nodeType: "BasicNumericValue"

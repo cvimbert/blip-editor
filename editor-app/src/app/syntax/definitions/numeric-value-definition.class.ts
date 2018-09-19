@@ -19,12 +19,12 @@ export class NumericValueDefinition {
         });
 
         // attention : get children ne fonctionne pas correctement
-        const extensions: SyntaxCheckResult[] = result.children["extension"];
+        const extensions: SyntaxCheckResult[] = result.children["extension"] || [];
 
         // attention aux opérations prioritaires
         extensions.forEach(extensionResult => {
             operations.push({
-                operator: extensionResult.getFirstDefinition("operator").operator,
+                operator: extensionResult.getFirstValue("operator"),
                 operand: extensionResult.getFirstDefinition("val").value
             });
         });

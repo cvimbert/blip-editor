@@ -64,11 +64,15 @@ export class BlocksService {
         // TODO: à supprimer
         const bankItemDefinition: BlockDefinition = blocksDictionary[blockName];
 
+        // à priori, étape inutile ici
         const item: BlockData = new BlockData({
-            class: bankItemDefinition.type,
+            class: bankItemDefinition.itemClass,
             //text: bankItemDefinition.text,
-            type: blockName,
-            breakAfter: !!bankItemDefinition.breakAfter
+            itemClass: (bankItemDefinition.type !== undefined) ? bankItemDefinition.type : blockName,
+
+            // à déplacer
+            breakAfter: !!bankItemDefinition.breakAfter,
+            value: bankItemDefinition.value
         });
 
         console.log(bankItemDefinition);

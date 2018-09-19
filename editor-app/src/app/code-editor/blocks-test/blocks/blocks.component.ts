@@ -39,7 +39,7 @@ export class BlocksComponent implements OnInit {
             this.bankItems.push(
                 {
                     type: key,
-                    class: blocksDictionary[key].type
+                    class: blocksDictionary[key].itemClass
                 }
             )
         }

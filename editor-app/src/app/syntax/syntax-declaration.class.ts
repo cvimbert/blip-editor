@@ -142,6 +142,7 @@ export class SyntaxDeclaration {
 
                 result.type = currentNode.blockReference;
                 result.value = blockUnits[index].value;
+                //console.log(result.type, result.value);
 
                 result.index++;
                 return result;
