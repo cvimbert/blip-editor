@@ -1,5 +1,17 @@
 <div class="drop-bank" #dropbank>
     <div class="validity-displayer" [class.valid]="isValid" (click)="clear()"></div>
     <div class="block-name">{{ type }}</div>
-    <block-item #blockitem *ngFor="let blockData of data; index as i" [index]="i" [bankType]="type" [bankName]="name" [data]="blockData"></block-item>
+
+    <div class="line" *ngFor="let line of data">
+        <div class="tabulation" [style.width.px]="30 * line.indentation"></div>
+        <block-item
+                *ngFor="let blockData of line.blocks"
+                #blockitem
+                [index]="incrementedBlocksCount"
+                [bankType]="type"
+                [bankName]="name"
+                [data]="blockData"
+        >
+        </block-item>
+    </div>
 </div>

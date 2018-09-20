@@ -10,5 +10,5 @@ export interface BlockDefinition {
 
     // ici ?
     breakAfter?: boolean;
-    indentAfter?: boolean;
+    indentAfter?: number;
 }

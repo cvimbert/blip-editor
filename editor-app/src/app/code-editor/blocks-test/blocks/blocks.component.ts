@@ -6,7 +6,7 @@ import {BlocksService} from "../blocks.service";
 import {BasicTypes} from "../basic-types.class";
 import {SyntaxDeclaration} from "../../../syntax/syntax-declaration.class";
 import {
-    baseDictionary, blocksDictionary, blocksSet1, ifTest,
+    baseDictionary, blocksDictionary,
     nodesDictionary
 } from "../../../syntax/syntax";
 import {SyntaxCheckResult} from "../../../syntax/syntax-check-result.class";

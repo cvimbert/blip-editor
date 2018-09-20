@@ -20,6 +20,7 @@ import { DropBankComponent } from './blocks-test/drop-banks/drop-bank/drop-bank.
 import {BlocksService} from "./blocks-test/blocks.service";
 import { BasicValueModalComponent } from './blocks-test/basic-value-modal/basic-value-modal.component';
 import { NumericValueDropBankComponent } from './blocks-test/drop-banks/numeric-value-drop-bank/numeric-value-drop-bank.component';
+import { BlocksLineComponent } from './blocks-test/blocks-line/blocks-line.component';
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { NumericValueDropBankComponent } from './blocks-test/drop-banks/numeric-
         BankItemComponent,
         DropBankComponent,
         BasicValueModalComponent,
-        NumericValueDropBankComponent
+        NumericValueDropBankComponent,
+        BlocksLineComponent
     ],
     providers: [
         CodeFilesProviderService,

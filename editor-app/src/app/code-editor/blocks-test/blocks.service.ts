@@ -17,22 +17,23 @@ import {BlockItemComponent} from "./block-item/block-item.component";
 import {DataConsolidator} from "../../syntax/data-consolidator.class";
 import {BlockDataUnit} from "../../syntax/block-data-unit.interface";
 import {ConsolidatedBlockDataUnit} from "../../syntax/consolidated-block-data-unit.class";
+import {BlocksLine} from "../../syntax/blocks-line.class";
 
 @Injectable()
 export class BlocksService {
+
+    syntaxDeclaration: SyntaxDeclaration;
+    consolidator: DataConsolidator;
 
     bankItemsByName: {[key: string]: BankItemInterface} = {};
     dropBanks: DropBankComponent[] = [];
     dropBanksByName: {[key: string]: DropBankComponent} = {};
 
-    consolidator: DataConsolidator;
-
     // TODO: regrouper ces deux objets dans un seul
     dropped: {[key: string]: BlockDataUnit[]} = {};
     consolidated: {[key: string]: ConsolidatedBlockDataUnit[]} = {};
+    linesConsolidated: {[key: string]: BlocksLine[]} = {};
     droppedComponent: {[key: string]: BlockItemComponent[]} = {};
-
-    syntaxDeclaration: SyntaxDeclaration;
 
     constructor(
         private dialog: MatDialog
@@ -62,6 +63,7 @@ export class BlocksService {
         }
 
         this.consolidated[component.name] = [];
+        this.linesConsolidated[component.name] = [];
         this.droppedComponent[component.name] = [];
 
         this.verifySyntax(component.name, component.type);
@@ -72,8 +74,7 @@ export class BlocksService {
         // TODO: à supprimer
         const bankItemDefinition: BlockDefinition = blocksDictionary[blockName];
 
-        // va remplacer item
-        const item2: BlockDataUnit = {
+        const item: BlockDataUnit = {
             type: blockName,
             value: bankItemDefinition.value
         };
@@ -82,7 +83,7 @@ export class BlocksService {
 
         if (bankItemDefinition.valueProvider) {
 
-            // todo: ne devrait pas se trouver ici
+            // todo: ne devrait pas se trouver ici, fonctionnement spécifique à Angular
             this.dialog.open(BasicValueModalComponent, {
                 data: {
                     type: bankItemDefinition.valueProvider
@@ -90,7 +91,7 @@ export class BlocksService {
                 width: "500px"
             }).beforeClose().subscribe((value: number) => {
                 if (value) {
-                    item2.value = value;
+                    item.value = value;
                     this.validateAndVerify(bankName, bankType);
                 }
             });
@@ -99,14 +100,13 @@ export class BlocksService {
             this.validateAndVerify(bankName, bankType);
         }
 
-        this.dropped[bankName].push(item2);
+        this.dropped[bankName].push(item);
     }
 
     private validateAndVerify(bankName: string, bankType: string) {
         // obligé de déférer pour récupérer la liste de composants
         // on peut peut-être faire autrement
         setTimeout(() => {
-            this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();
             this.verifySyntax(bankName, bankType);
         });
     }
@@ -123,22 +123,12 @@ export class BlocksService {
             this.dropBanksByName[bankName].onError.emit(res.error);
         }
 
-        // tout ça devrait pouvoir être déporté dans une fonction de consolidation des données
-        // reset errors
-
-        /*if (!res.result && Object.keys(res.error).length > 0) {
-            if (res.error.end > -1) {
-                this.dropped[bankName][res.error.end].errorAfter = true;
-                this.dropped[bankName][res.error.end].errorText = res.error.errorText;
-            } else {
-                this.dropped[bankName][0].errorBefore = true;
-                this.dropped[bankName][0].errorText = res.error.errorText
-            }
-
-            this.dropped[bankName].slice(res.error.end + 1, this.dropped[bankName].length).forEach(data => data.inactive = true);
-        }*/
-
         this.consolidated[bankName] = this.consolidator.getConsolidatedData(this.dropped[bankName], Object.keys(res.error).length > 0 ? res.error : null);
+        this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], Object.keys(res.error).length > 0 ? res.error : null);
+
+        setTimeout(() => {
+            this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();
+        });
     }
 
     moveBlockToIndex(from: number, to: number, bankName: string, bankType: string) {
@@ -160,14 +150,6 @@ export class BlocksService {
         this.dropped[bankName].splice(index, 1);
         this.verifySyntax(bankName, bankType);
     }
-
-    openValueModal(type: string): Observable<any> {
-        return this.dialog.open(BasicValueModalComponent, {
-            width: "500px",
-            data: this.bankItemsByName[type]
-        }).beforeClose();
-    }
-
 
     save() {
         localStorage.setItem("blocks", JSON.stringify(this.dropped));

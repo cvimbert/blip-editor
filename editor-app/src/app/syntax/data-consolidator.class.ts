@@ -30,13 +30,22 @@ export class DataConsolidator {
         const lines: BlocksLine[] = [];
         const consolidated: ConsolidatedBlockDataUnit[] = this.getConsolidatedData(data, error);
 
+        let indentation: number = 0;
+
         let currentLine: BlocksLine = new BlocksLine();
         lines.push(currentLine);
 
         consolidated.forEach(item => {
+
+            if (item.lineJump && item.indentAfter) {
+                indentation += item.indentAfter;
+                console.log("indent", indentation);
+            }
+
             currentLine.pushBlock(item);
             if (item.lineJump) {
                 currentLine = new BlocksLine();
+                currentLine.identation = indentation;
                 lines.push(currentLine);
             }
         });

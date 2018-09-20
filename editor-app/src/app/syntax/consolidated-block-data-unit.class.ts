@@ -10,6 +10,7 @@ export class ConsolidatedBlockDataUnit {
     errorAfter: boolean = false;
     errorBefore: boolean = false;
     inactive: boolean = false;
+    indentAfter: number;
 
     constructor(
         syntax: SyntaxDeclaration,
@@ -25,5 +26,6 @@ export class ConsolidatedBlockDataUnit {
 
         this.class = definition.itemClass;
         this.lineJump = definition.breakAfter;
+        this.indentAfter = definition.indentAfter;
     }
 }

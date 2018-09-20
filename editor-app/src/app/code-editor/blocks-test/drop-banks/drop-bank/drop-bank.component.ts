@@ -1,5 +1,6 @@
 import {
-    Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChild,
+    Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, QueryList,
+    ViewChild,
     ViewChildren
 } from '@angular/core';
 import {BlocksService} from "../../blocks.service";
@@ -8,6 +9,7 @@ import {BlockItemComponent} from "../../block-item/block-item.component";
 import {SyntaxCheckError} from "../../../../syntax/syntax-check-error.class";
 import {SyntaxCheckResult} from "../../../../syntax/syntax-check-result.class";
 import {ConsolidatedBlockDataUnit} from "../../../../syntax/consolidated-block-data-unit.class";
+import {BlocksLine} from "../../../../syntax/blocks-line.class";
 
 @Component({
     selector: 'drop-bank',
@@ -26,6 +28,7 @@ export class DropBankComponent implements OnInit, OnDestroy {
     @Output("onResult") onResult: EventEmitter<SyntaxCheckResult[]> = new EventEmitter<SyntaxCheckResult[]>();
 
     isValid: boolean = false;
+    private blocksCount: number;
 
     constructor(
         private blocksService: BlocksService
@@ -35,8 +38,13 @@ export class DropBankComponent implements OnInit, OnDestroy {
         this.blocksService.registerDropBank(this);
     }
 
-    get data(): ConsolidatedBlockDataUnit[] {
-        return this.blocksService.consolidated[this.name];
+    get data(): BlocksLine[] {
+        this.blocksCount = 0;
+        return this.blocksService.linesConsolidated[this.name];
+    }
+
+    get incrementedBlocksCount(): number {
+        return this.blocksCount++;
     }
 
     addBlock() {

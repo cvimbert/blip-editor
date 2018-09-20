@@ -51,12 +51,14 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     leftBracket: {
         itemClass: "basic",
         text: "{",
-        breakAfter: true
+        breakAfter: true,
+        indentAfter: 1
     },
     rightBracket: {
         itemClass: "basic",
         text: "}",
-        breakAfter: true
+        breakAfter: true,
+        indentAfter: -1
     },
     conditionBlock: {
         itemClass: "condition",
@@ -435,87 +437,3 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         blockReference: "codeBlock"
     }
 };
-
-export const ifTest: BlockUnit[] = [
-    {
-        type: "ifOpener"
-    },
-    {
-        type: "conditionBlock"
-    },
-    {
-        type: "rightParenthesis"
-    },
-    {
-        type: "leftBracket"
-    },
-    {
-        type: "codeBlock"
-    },
-    {
-        type: "rightBracket"
-    },
-    {
-        type: "elseIfOpener"
-    },
-    {
-        type: "conditionBlock"
-    },
-    {
-        type: "rightParenthesis"
-    },
-    {
-        type: "leftBracket"
-    },
-    {
-        type: "codeBlock"
-    },
-    {
-        type: "rightBracket"
-    },
-    {
-        type: "elseIfOpener"
-    },
-    {
-        type: "conditionBlock"
-    },
-    {
-        type: "rightParenthesis"
-    },
-    {
-        type: "leftBracket"
-    },
-    {
-        type: "codeBlock"
-    },
-    {
-        type: "rightBracket"
-    },
-    {
-        type: "elseBlock"
-    },
-    {
-        type: "leftBracket"
-    },
-    {
-        type: "codeBlock"
-    },
-    {
-        type: "rightBracket"
-    }
-];
-
-export const blocksSet1: BlockUnit[] = [
-    {
-        type: "imageFileReference",
-        value: "Chemin vers le fichier machin"
-    },
-    {
-        type: "numberValue",
-        value: 45
-    },
-    {
-        type: "numberValue",
-        value: 77
-    }
-];
