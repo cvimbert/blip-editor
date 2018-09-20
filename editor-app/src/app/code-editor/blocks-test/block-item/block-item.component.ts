@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {BlockData} from "../block-data.class";
 import {BlocksService} from "../blocks.service";
 import {HitResult} from "../hit-result.interface";
+import {ConsolidatedBlockDataUnit} from "../../../syntax/consolidated-block-data-unit.class";
 
 declare var require: any;
 const Draggable = require("gsap/Draggable");
@@ -14,7 +15,7 @@ const TweenLite = require("gsap/TweenLite");
 })
 export class BlockItemComponent implements OnInit {
 
-    @Input() data: BlockData;
+    @Input() data: ConsolidatedBlockDataUnit;
     @ViewChild("content") content: ElementRef;
     @Input("bankName") bankName: string;
     @Input("index") index: number;
@@ -130,6 +131,6 @@ export class BlockItemComponent implements OnInit {
     }
 
     displayError() {
-        console.log("MSG", this.data.errorText);
+        //console.log("MSG", this.data.errorText);
     }
 }

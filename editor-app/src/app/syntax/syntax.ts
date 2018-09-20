@@ -15,12 +15,18 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     numberValue: {
         itemClass: "basic-values",
         text: "number",
-        valueProvider: "number"
+        valueProvider: "number",
+        textProvider: (value: number) => {
+            return value;
+        }
     },
     booleanValue: {
         itemClass: "basic-values",
         text: "boolean",
-        valueProvider: "boolean"
+        valueProvider: "boolean",
+        textProvider: (value: string) => {
+            return value;
+        }
     },
     stringValue: {
         itemClass: "basic-values",
@@ -122,12 +128,12 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
         value: "*"
     },
     division: {
+        // pour l'analyse syntaxique, c'est le type qui doit être utilisé, au lieu de la clé
         type: "arithmeticOperator",
         itemClass: "files",
         text: "/",
         value: "/"
     }
-
 };
 
 export const baseDictionary: SyntaxNodesDictionary = {

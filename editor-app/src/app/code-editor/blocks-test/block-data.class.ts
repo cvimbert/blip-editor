@@ -4,8 +4,12 @@ export class BlockData {
 
     mainText: string;
     lineJump: boolean;
+
+    // ce sont les deux seules infos qu'on doit retrouver dans blockData
     type: string;
     value: any;
+
+
     class: string;
     errorAfter: boolean = false;
     errorBefore: boolean = false;

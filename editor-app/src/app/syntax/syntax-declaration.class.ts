@@ -12,7 +12,7 @@ export class SyntaxDeclaration {
 
     constructor(
         syntaxDictionaries: SyntaxNodesDictionary[],
-        private blocksDictionary: BlockDefinitionsDictionary
+        public blocksDictionary: BlockDefinitionsDictionary
     ) {
         syntaxDictionaries.forEach(dict => {
             for (let key in dict) {
@@ -138,7 +138,11 @@ export class SyntaxDeclaration {
 
         } else if (currentNode.blockReference) {
 
-            if (blockUnits[index].type === currentNode.blockReference) {
+            let type: string = blockUnits[index].type;
+            let subType: string = this.blocksDictionary[type].type;
+            console.log();
+
+            if ((subType || type) === currentNode.blockReference) {
 
                 result.type = currentNode.blockReference;
                 result.value = blockUnits[index].value;

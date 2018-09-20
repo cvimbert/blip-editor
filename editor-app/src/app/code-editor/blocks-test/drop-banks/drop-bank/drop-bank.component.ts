@@ -7,6 +7,7 @@ import {BlockData} from "../../block-data.class";
 import {BlockItemComponent} from "../../block-item/block-item.component";
 import {SyntaxCheckError} from "../../../../syntax/syntax-check-error.class";
 import {SyntaxCheckResult} from "../../../../syntax/syntax-check-result.class";
+import {ConsolidatedBlockDataUnit} from "../../../../syntax/consolidated-block-data-unit.class";
 
 @Component({
     selector: 'drop-bank',
@@ -34,8 +35,8 @@ export class DropBankComponent implements OnInit, OnDestroy {
         this.blocksService.registerDropBank(this);
     }
 
-    get data(): BlockData[] {
-        return this.blocksService.dropped[this.name];
+    get data(): ConsolidatedBlockDataUnit[] {
+        return this.blocksService.consolidated[this.name];
     }
 
     addBlock() {
