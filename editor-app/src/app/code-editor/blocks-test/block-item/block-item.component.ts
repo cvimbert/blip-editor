@@ -32,7 +32,6 @@ export class BlockItemComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log(this.index);
         this.draggable = Draggable.create(this.content.nativeElement, {
             onDrag: () => {
                 this.resetHitValues();

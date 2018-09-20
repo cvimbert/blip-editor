@@ -37,15 +37,21 @@ export class DataConsolidator {
 
         consolidated.forEach(item => {
 
+            // TODO: vérifier le fonctionnement de indentAfter (qui est à priori temporaire)
+
+            if (item.indentAfter) {
+                currentLine.indentation += Math.min(0, item.indentAfter);
+            }
+
             if (item.lineJump && item.indentAfter) {
                 indentation += item.indentAfter;
-                console.log("indent", indentation);
+                //console.log("indent", indentation);
             }
 
             currentLine.pushBlock(item);
             if (item.lineJump) {
                 currentLine = new BlocksLine();
-                currentLine.identation = indentation;
+                currentLine.indentation = indentation;
                 lines.push(currentLine);
             }
         });

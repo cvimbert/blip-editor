@@ -3,7 +3,7 @@ import {ConsolidatedBlockDataUnit} from "./consolidated-block-data-unit.class";
 export class BlocksLine {
 
     blocks: ConsolidatedBlockDataUnit[] = [];
-    identation: number = 0;
+    indentation: number = 0;
 
     constructor() {}
 
