@@ -16,7 +16,6 @@ import {SyntaxCheckCompleteResult} from "../../syntax/syntax-check-complete-resu
 import {BlockItemComponent} from "./block-item/block-item.component";
 import {DataConsolidator} from "../../syntax/data-consolidator.class";
 import {BlockDataUnit} from "../../syntax/block-data-unit.interface";
-import {ConsolidatedBlockDataUnit} from "../../syntax/consolidated-block-data-unit.class";
 import {BlocksLine} from "../../syntax/blocks-line.class";
 
 @Injectable()
@@ -31,9 +30,13 @@ export class BlocksService {
 
     // TODO: regrouper ces deux objets dans un seul
     dropped: {[key: string]: BlockDataUnit[]} = {};
-    consolidated: {[key: string]: ConsolidatedBlockDataUnit[]} = {};
     linesConsolidated: {[key: string]: BlocksLine[]} = {};
     droppedComponent: {[key: string]: BlockItemComponent[]} = {};
+
+    typesByName: {[key: string]: string} = {};
+
+    currentBankType: string;
+    currentBankName: string;
 
     constructor(
         private dialog: MatDialog
@@ -62,11 +65,14 @@ export class BlocksService {
             });
         }
 
-        this.consolidated[component.name] = [];
         this.linesConsolidated[component.name] = [];
         this.droppedComponent[component.name] = [];
 
         this.verifySyntax(component.name, component.type);
+    }
+
+    updateBank(bankName: string) {
+        this.dropBanksByName[bankName].update();
     }
 
     registerDropAction(bankName: string, blockName: string, bankType: string) {
@@ -106,8 +112,10 @@ export class BlocksService {
     private validateAndVerify(bankName: string, bankType: string) {
         // obligé de déférer pour récupérer la liste de composants
         // on peut peut-être faire autrement
+
         setTimeout(() => {
             this.verifySyntax(bankName, bankType);
+            this.updateBank(bankName);
         });
     }
 
@@ -123,7 +131,6 @@ export class BlocksService {
             this.dropBanksByName[bankName].onError.emit(res.error);
         }
 
-        this.consolidated[bankName] = this.consolidator.getConsolidatedData(this.dropped[bankName], Object.keys(res.error).length > 0 ? res.error : null);
         this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], Object.keys(res.error).length > 0 ? res.error : null);
 
         setTimeout(() => {

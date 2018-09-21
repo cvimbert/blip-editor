@@ -21,7 +21,8 @@ import { AddProjectModalComponent } from './add-project-modal/add-project-modal.
         MatButtonModule,
         MatIconModule,
         MatDialogModule,
-        MatInputModule
+        MatInputModule,
+        MatIconModule
     ],
     declarations: [
         ProjectsListComponent,

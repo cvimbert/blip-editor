@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, QueryList,
     ViewChild,
     ViewChildren
@@ -14,12 +15,14 @@ import {BlocksLine} from "../../../../syntax/blocks-line.class";
 @Component({
     selector: 'drop-bank',
     templateUrl: './drop-bank.component.html',
-    styleUrls: ['./drop-bank.component.scss']
+    styleUrls: ['./drop-bank.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropBankComponent implements OnInit, OnDestroy {
 
     @Input("type") type: string;
     @Input("name") name: string;
+    @Input("mode") mode: string = "preview";
 
     @ViewChild("dropbank") dropBank: ElementRef;
     @ViewChildren("blockitem") blockItems: QueryList<BlockItemComponent>;
@@ -31,7 +34,8 @@ export class DropBankComponent implements OnInit, OnDestroy {
     private blocksCount: number;
 
     constructor(
-        private blocksService: BlocksService
+        private blocksService: BlocksService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -47,12 +51,20 @@ export class DropBankComponent implements OnInit, OnDestroy {
         return this.blocksCount++;
     }
 
+    update() {
+        this.cdr.detectChanges();
+    }
+
     addBlock() {
 
     }
 
     clear() {
         this.blocksService.dropped[this.name] = [];
+    }
+
+    edit() {
+
     }
 
     ngOnDestroy() {

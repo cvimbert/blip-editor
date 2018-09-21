@@ -1,0 +1,23 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+
+  .code-container {
+    flex: 1;
+    //padding: 6px;
+
+    drop-bank {
+      height: 100%;
+      //right: 6px;
+      //left: 6px;
+      display: block;
+    }
+  }
+
+  virtual-code-keyboard {
+    height: 30%;
+  }
+}

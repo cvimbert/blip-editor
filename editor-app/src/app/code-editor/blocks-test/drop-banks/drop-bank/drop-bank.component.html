@@ -1,17 +1,28 @@
 <div class="drop-bank" #dropbank>
-    <div class="validity-displayer" [class.valid]="isValid" (click)="clear()"></div>
-    <div class="block-name">{{ type }}</div>
+    <div class="top-part">
+        <div class="validity-displayer" [class.valid]="isValid" (click)="clear()"></div>
+        <div class="block-name">{{ type }}</div>
 
-    <div class="line" *ngFor="let line of data">
-        <div class="tabulation" [style.width.px]="30 * line.indentation"></div>
-        <block-item
-                *ngFor="let blockData of line.blocks"
-                #blockitem
-                [index]="incrementedBlocksCount"
-                [bankType]="type"
-                [bankName]="name"
-                [data]="blockData"
-        >
-        </block-item>
+        <div class="actions-container">
+            <mat-icon *ngIf="mode === 'preview'" [routerLink]="[name, type]">edit</mat-icon>
+            <mat-icon *ngIf="mode === 'edit'" routerLink="../..">backspace</mat-icon>
+        </div>
     </div>
+
+    <div class="code-container">
+        <div class="line" *ngFor="let line of data; index as i">
+            <div class="line-number">{{ i + 1 }}</div>
+            <div class="tabulation" [style.width.px]="30 * line.indentation"></div>
+            <block-item
+                    *ngFor="let blockData of line.blocks"
+                    #blockitem
+                    [index]="incrementedBlocksCount"
+                    [bankType]="type"
+                    [bankName]="name"
+                    [data]="blockData"
+            >
+            </block-item>
+        </div>
+    </div>
+
 </div>

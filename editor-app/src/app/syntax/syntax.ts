@@ -320,13 +320,13 @@ export const nodesDictionary: SyntaxNodesDictionary = {
         description: "numbers comparison",
         list: {
             value1: {
-                nodeType: "NumberValue"
+                nodeType: "NumericValue"
             },
             operator: {
                 nodeType: "ComparisonOperator"
             },
             value2: {
-                nodeType: "NumberValue"
+                nodeType: "NumericValue"
             }
         }
     },

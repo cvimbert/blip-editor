@@ -21,6 +21,8 @@ import {BlocksService} from "./blocks-test/blocks.service";
 import { BasicValueModalComponent } from './blocks-test/basic-value-modal/basic-value-modal.component';
 import { NumericValueDropBankComponent } from './blocks-test/drop-banks/numeric-value-drop-bank/numeric-value-drop-bank.component';
 import { BlocksLineComponent } from './blocks-test/blocks-line/blocks-line.component';
+import { VirtualCodeKeyboardComponent } from './blocks-test/virtual-code-keyboard/virtual-code-keyboard.component';
+import { DropBankEditComponent } from './blocks-test/drop-bank-edit/drop-bank-edit.component';
 
 @NgModule({
     imports: [
@@ -46,7 +48,9 @@ import { BlocksLineComponent } from './blocks-test/blocks-line/blocks-line.compo
         DropBankComponent,
         BasicValueModalComponent,
         NumericValueDropBankComponent,
-        BlocksLineComponent
+        BlocksLineComponent,
+        VirtualCodeKeyboardComponent,
+        DropBankEditComponent
     ],
     providers: [
         CodeFilesProviderService,

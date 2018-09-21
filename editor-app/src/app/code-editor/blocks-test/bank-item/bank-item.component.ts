@@ -28,7 +28,7 @@ export class BankItemComponent implements OnInit {
         // TODO: temporaire, à supprimer dès que possible
         this.text = blocksDictionary[this.data.type].text;
 
-        let draggable = Draggable.create(this.content.nativeElement, {
+        /*let draggable = Draggable.create(this.content.nativeElement, {
             onDragEnd: () => {
                 // on unitCheck si on touche une zone de drop
                 for (let bank of this.blocksService.dropBanks) {
@@ -48,7 +48,11 @@ export class BankItemComponent implements OnInit {
                     clearProps: "all"
                 });
             }
-        })[0];
+        })[0];*/
+    }
+
+    useKey() {
+        this.blocksService.registerDropAction(this.blocksService.currentBankName, this.data.type, this.blocksService.currentBankType);
     }
 
 }

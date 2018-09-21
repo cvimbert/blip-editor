@@ -42,6 +42,7 @@ export class BlockItemComponent implements OnInit {
                     hitResult.hitObject.hit = true;
                     hitResult.hitObject.hitOnRight = hitResult.intersectionArea > 0;
                     hitResult.hitObject.hitOnLeft = hitResult.intersectionArea <= 0;
+                    this.blocksService.updateBank(this.bankName);
                 }
             },
             onDragEnd: (evt: PointerEvent) => {
@@ -61,6 +62,8 @@ export class BlockItemComponent implements OnInit {
                 } else {
                     this.blocksService.removeBlockAtIndex(this.index, this.bankName, this.bankType);
                 }
+
+                this.blocksService.updateBank(this.bankName);
 
                 TweenLite.set(this.content.nativeElement, {
                     css: {

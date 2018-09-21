@@ -10,6 +10,9 @@ export class DataConsolidator {
         private syntax: SyntaxDeclaration
     ) {}
 
+    // TODO: attention : ne pas regénérer d'objet à chaque drop
+    // complètement préjudiciable pour les performances
+
     getConsolidatedData(data: BlockDataUnit[], error: SyntaxCheckError): ConsolidatedBlockDataUnit[] {
 
         const consolidated: ConsolidatedBlockDataUnit[] = data.map(unit => new ConsolidatedBlockDataUnit(this.syntax, unit));
@@ -45,7 +48,6 @@ export class DataConsolidator {
 
             if (item.lineJump && item.indentAfter) {
                 indentation += item.indentAfter;
-                //console.log("indent", indentation);
             }
 
             currentLine.pushBlock(item);

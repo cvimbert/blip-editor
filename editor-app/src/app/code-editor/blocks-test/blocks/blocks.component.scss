@@ -1,8 +1,33 @@
 .content {
-  padding: 20px;
+
+  text-align: center;
 }
 
 .buttons-container {
   text-align: center;
   margin-top: 30px;
+}
+
+.banks-container {
+  padding: 15px;
+}
+
+.main-container {
+  height: 100%;
+  width: 100%;
+  //padding: 10px;
+  //text-align: center;
+
+  virtual-code-keyboard {
+    height: 30%;
+  }
+}
+
+drop-bank, numeric-value-drop-bank {
+  display: inline-block;
+  width: 475px;
+  height: 260px;
+  margin-right: 5px;
+  margin-bottom: 11px;
+  border: 1px solid;
 }

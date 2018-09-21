@@ -1,19 +1,20 @@
-<div class="bank">
-<app-items-bank [items]="bankItems"></app-items-bank>
+<div class="main-container">
+    <div class="banks-container">
+        <numeric-value-drop-bank type="NumericValue" name="num1"></numeric-value-drop-bank>
+
+        <drop-bank type="If" name="zone1"></drop-bank>
+        <drop-bank type="If" name="zone2"></drop-bank>
+        <drop-bank type="If" name="zone3"></drop-bank>
+        <drop-bank type="If" name="zone4"></drop-bank>
+        <drop-bank type="If" name="zone5"></drop-bank>
+        <drop-bank type="If" name="zone6"></drop-bank>
+
+        <drop-bank type="CompleteBooleanExpression" name="zone7"></drop-bank>
+
+        <div class="buttons-container">
+            <input type="button" value="Save" (click)="save()">
+            <input type="button" value="Clear" (click)="clear()">
+        </div>
+    </div>
 </div>
 
-<numeric-value-drop-bank type="NumericValue" name="num1"></numeric-value-drop-bank>
-
-<drop-bank type="If" name="zone1"></drop-bank>
-<drop-bank type="If" name="zone2"></drop-bank>
-<drop-bank type="If" name="zone3"></drop-bank>
-<drop-bank type="If" name="zone4"></drop-bank>
-<drop-bank type="If" name="zone5"></drop-bank>
-<drop-bank type="If" name="zone6"></drop-bank>
-
-<drop-bank type="CompleteBooleanExpression" name="zone7"></drop-bank>
-
-<div class="buttons-container">
-    <input type="button" value="Save" (click)="save()">
-    <input type="button" value="Clear" (click)="clear()">
-</div>
