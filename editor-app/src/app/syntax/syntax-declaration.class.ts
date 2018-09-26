@@ -74,10 +74,6 @@ export class SyntaxDeclaration {
 
         // un node ne peut contenir que : list, children ou blockReference, ou nodeType
 
-        if (!currentNode) {
-            console.log("ici");
-        }
-
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
@@ -97,12 +93,33 @@ export class SyntaxDeclaration {
         } else if (currentNode.list) {
 
             let subIndex: number = index;
+            let indexInList: number = 0;
+            let hasFailed: boolean = false;
 
             for (let key in currentNode.list) {
+
+                if (currentNode.completeParsing) {
+                    //console.log("parse " + key + " at " + subIndex);
+                }
+
                 // on check l'intégralité des éléments de "list", qui doivent tous retourner true pour que le noeud soit validé
+                let startSub: number = subIndex;
                 let currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, error);
 
+                // null -> échec de parsing
+                // [] -> pas de valeur de retour sur un élément optionnel
+
+                // on ne remplit le tableau d'options (ou suggestions) que si le premier élément de le liste a
+                // été évalué positivement
+                if (currRes === null || currRes.length === 0) {
+                    if (currentNode.completeParsing && indexInList > 0) {
+                        error.pushOption(key, subIndex);
+                    }
+                }
+
                 if (currRes === null) {
+
+                    // ne devrait plus être utile bientôt
                     if (subIndex > index || subIndex === 0) {
                         error.node = currentNode;
                         error.start = index;
@@ -110,21 +127,43 @@ export class SyntaxDeclaration {
                         error.key = key;
                     }
 
-                    return null;
-                }
+                    // attention à la distinction erreur <=> suggestion
+                    if (currentNode.completeParsing) {
+                        //console.log("failure in list parsing", key, indexInList);
+                        //error.pushFailure(key, subIndex);
+                    }
 
-                if (currRes.length > 0) {
-                    if (currRes[currRes.length - 1].index !== subIndex) {
+                    hasFailed = true;
+
+                    if (!currentNode.completeParsing || indexInList === 0) {
+                        return null;
+                    }
+
+                } else {
+                    if (currentNode.completeParsing) {
+                        //console.log("success in list parsing", key, indexInList, currRes);
+                    }
+
+                    if (currRes && currRes[currRes.length - 1] && currRes[currRes.length - 1].index !== subIndex) {
                         result.pushChildrenArray(key, currRes);
                     }
 
-                    subIndex = currRes[currRes.length - 1].index;
+                    if (currRes && currRes.length > 0) {
+                        subIndex = currRes[currRes.length - 1].index;
+                    }
+
                 }
 
+                indexInList++;
             }
 
-            result.index = subIndex;
-            return result;
+            if (!hasFailed) {
+                result.index = subIndex;
+                return result;
+            } else {
+                return null;
+            }
+
 
         } else if (currentNode.nodeType) {
 
@@ -140,15 +179,13 @@ export class SyntaxDeclaration {
 
             let type: string = blockUnits[index].type;
             let subType: string = this.blocksDictionary[type].type;
-            console.log();
 
             if ((subType || type) === currentNode.blockReference) {
 
                 result.type = currentNode.blockReference;
                 result.value = blockUnits[index].value;
-                //console.log(result.type, result.value);
-
                 result.index++;
+
                 return result;
             } else {
                 return null;
@@ -172,8 +209,6 @@ export class SyntaxDeclaration {
         }
 
         let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error);
-
-        //console.log(currentNode, res);
 
         if (res) {
             if (currentNode.definitionClass) {

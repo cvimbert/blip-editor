@@ -6,7 +6,7 @@ import {BlocksService} from "../blocks.service";
 import {BasicTypes} from "../basic-types.class";
 import {SyntaxDeclaration} from "../../../syntax/syntax-declaration.class";
 import {
-    baseDictionary, blocksDictionary,
+    blocksDictionary,
     nodesDictionary
 } from "../../../syntax/syntax";
 import {SyntaxCheckResult} from "../../../syntax/syntax-check-result.class";
@@ -28,7 +28,7 @@ export class BlocksComponent implements OnInit {
     ) {
 
         const declaration: SyntaxDeclaration = new SyntaxDeclaration(
-            [baseDictionary, nodesDictionary],
+            [nodesDictionary],
             blocksDictionary
         );
 

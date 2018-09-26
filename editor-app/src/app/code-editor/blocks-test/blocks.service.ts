@@ -8,7 +8,7 @@ import {BasicValueModalComponent} from "./basic-value-modal/basic-value-modal.co
 import {Definition} from "../../block-definitions/definition.interface";
 import {definitions} from "../../block-definitions/definitions";
 import {Leave} from "../../block-definitions/leave.interface";
-import {baseDictionary, blocksDictionary, nodesDictionary} from "../../syntax/syntax";
+import {blocksDictionary, nodesDictionary} from "../../syntax/syntax";
 import {BlockDefinition} from "../../syntax/block-definition.interface";
 import {SyntaxDeclaration} from "../../syntax/syntax-declaration.class";
 import {SyntaxNode} from "../../syntax/syntax-node.interface";
@@ -41,7 +41,7 @@ export class BlocksService {
     constructor(
         private dialog: MatDialog
     ) {
-        this.syntaxDeclaration = new SyntaxDeclaration([baseDictionary, nodesDictionary], blocksDictionary);
+        this.syntaxDeclaration = new SyntaxDeclaration([nodesDictionary], blocksDictionary);
 
         let blocksData: string = localStorage.getItem("blocks");
 
@@ -123,6 +123,8 @@ export class BlocksService {
         const res: SyntaxCheckCompleteResult = this.syntaxDeclaration.parseWithErrorManagement(this.dropped[bankName], bankType);
         this.dropBanksByName[bankName].isValid = !!res.result;
 
+        console.log("RRR", res);
+
         if (res.result) {
             this.dropBanksByName[bankName].onResult.emit(res.result);
         }
@@ -131,7 +133,7 @@ export class BlocksService {
             this.dropBanksByName[bankName].onError.emit(res.error);
         }
 
-        this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], Object.keys(res.error).length > 0 ? res.error : null);
+        this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], res.error);
 
         setTimeout(() => {
             this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();

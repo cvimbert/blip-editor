@@ -18,11 +18,15 @@ export class DataConsolidator {
         const consolidated: ConsolidatedBlockDataUnit[] = data.map(unit => new ConsolidatedBlockDataUnit(this.syntax, unit));
 
         if (error && consolidated && consolidated.length > 0) {
-            if (error.end > -1) {
+
+            error.parsingFailures.forEach(failure => consolidated[failure.index - 1].errorAfter = true);
+            error.parsingOptions.forEach(option => consolidated[option.index - 1].pushSuggestion(option));
+
+            /*if (error.end > -1) {
                 consolidated[error.end].errorAfter = true;
             } else {
                 consolidated[0].errorBefore = true;
-            }
+            }*/
         }
 
         return consolidated;

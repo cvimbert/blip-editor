@@ -8,6 +8,8 @@ export interface SyntaxNode {
     name?: string;
     description?: string;
 
+    completeParsing?: boolean;
+
     children?: {[key: string]: (string | SyntaxNode) };
     list?: {[key: string]: (string | SyntaxNode)};
     blockReference?: string;

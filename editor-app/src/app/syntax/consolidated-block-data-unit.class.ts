@@ -1,6 +1,7 @@
 import {BlockDataUnit} from "./block-data-unit.interface";
 import {SyntaxDeclaration} from "./syntax-declaration.class";
 import {BlockDefinition} from "./block-definition.interface";
+import {SyntaxCheckErrorUnit} from "./syntax-check-error-unit.interface";
 
 export class ConsolidatedBlockDataUnit {
 
@@ -11,6 +12,8 @@ export class ConsolidatedBlockDataUnit {
     errorBefore: boolean = false;
     inactive: boolean = false;
     indentAfter: number;
+
+    suggestions: SyntaxCheckErrorUnit[] = [];
 
     constructor(
         syntax: SyntaxDeclaration,
@@ -27,5 +30,9 @@ export class ConsolidatedBlockDataUnit {
         this.class = definition.itemClass;
         this.lineJump = definition.breakAfter;
         this.indentAfter = definition.indentAfter;
+    }
+
+    pushSuggestion(suggestion: SyntaxCheckErrorUnit) {
+        this.suggestions.push(suggestion);
     }
 }

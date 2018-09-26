@@ -5,6 +5,7 @@ import {SpriteDefinition} from "./definitions/sprite-definition.class";
 import {NumericValueDefinition} from "./definitions/numeric-value-definition.class";
 import {SimpleNumericValueDefinition} from "./definitions/simple-numeric-value-definition.class";
 import {ArithmeticOperatorDefinition} from "./definitions/arithmetic-operator-definition.class";
+import {MultiBlocksDeclarationDictionary} from "./multi-blocks-declaration-dictionary.interface";
 
 export const blocksDictionary: BlockDefinitionsDictionary = {
     imageFileReference: {
@@ -130,7 +131,7 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
         value: "*"
     },
     division: {
-        // pour l'analyse syntaxique, c'est le type qui doit être utilisé, au lieu de la clé
+        // pour l'analyse syntaxique, c'est le type qui doit être utilisé, au lieu de la clé, si le type existe
         type: "arithmeticOperator",
         itemClass: "files",
         text: "/",
@@ -138,8 +139,28 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     }
 };
 
-export const baseDictionary: SyntaxNodesDictionary = {
-
+export const multiBlocks: MultiBlocksDeclarationDictionary = {
+    simpleIf: {
+        text: "if",
+        blocks: [
+            "ifOpener",
+            "rightParenthesis",
+            "leftBracket",
+            "rightBracket"
+        ]
+    },
+    ifElse: {
+        text: "if...\nelse...",
+        blocks: [
+            "ifOpener",
+            "rightParenthesis",
+            "leftBracket",
+            "rightBracket",
+            "elseBlock",
+            "leftBracket",
+            "rightBracket"
+        ]
+    }
 };
 
 export const nodesDictionary: SyntaxNodesDictionary = {
@@ -350,6 +371,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
     },
     If: {
         description: "Un if de base",
+        completeParsing: true,
         list: {
             startIf: {
                 blockReference: "ifOpener",
@@ -362,17 +384,14 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "rightParenthesis"
             },
             openBlock: {
-                blockReference: "leftBracket",
-                // breakAfter: true
+                blockReference: "leftBracket"
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*",
-                // breakAfter: true
+                iterator: "*"
             },
             closeBlock: {
-                blockReference: "rightBracket",
-                // breakAfter: true
+                blockReference: "rightBracket"
             },
             elseIfComplement: {
                 nodeType: "ElseIfComplement",
@@ -386,6 +405,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
     },
     ElseIfComplement: {
         description: "Else if complement",
+        completeParsing: true,
         list: {
             elseIfOpener: {
                 blockReference: "elseIfOpener"
@@ -413,6 +433,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
     },
     ElseComplement: {
         description: "Else complement",
+        completeParsing: true,
         list: {
             else: {
                 blockReference: "elseBlock"
