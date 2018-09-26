@@ -276,4 +276,32 @@ export class SyntaxDeclaration {
                 return resVal === null ? null : [resVal];
         }
     }
+
+    getNodeDirectChildren(nodeName: string, include: string[] = []): string[] {
+
+        console.log(include);
+
+        const children: string[] = [];
+
+        const node: SyntaxNode = this.completeSyntaxNodesDictionary[nodeName];
+
+        if (node.list) {
+            for (let key in node.list) {
+
+                const ref: string = (<SyntaxNode>node.list[key]).blockReference;
+
+                if (ref) {
+                    children.push(ref)
+                }
+
+                if (include.indexOf(key) !== -1) {
+                    const type: string = (<SyntaxNode>node.list[key]).nodeType;
+                    console.log(type);
+                    children.push(...this.getNodeDirectChildren(type));
+                }
+            }
+        }
+
+        return children;
+    }
 }

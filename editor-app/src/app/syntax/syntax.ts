@@ -37,6 +37,17 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
             return '"' + value + '"';
         }
     },
+    if: {
+        itemClass: "basic",
+        text: "if...",
+        nodeReference: "If"
+    },
+    ifElse: {
+        itemClass: "basic",
+        text: "if... else...",
+        nodeReference: "If",
+        include: ["elseComplement"]
+    },
     ifOpener: {
         itemClass: "basic",
         text: "if ("
@@ -76,7 +87,7 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     codeBlock: {
         itemClass: "code",
         text: "codeBlock",
-        breakAfter: true
+        //breakAfter: true
     },
     booleanAnd: {
         // temp, pour la couleur rouge
@@ -139,6 +150,7 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     }
 };
 
+// à priori les multi-blocks ne devraient pas être utile
 export const multiBlocks: MultiBlocksDeclarationDictionary = {
     simpleIf: {
         text: "if",
@@ -384,14 +396,19 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 blockReference: "rightParenthesis"
             },
             openBlock: {
-                blockReference: "leftBracket"
+                blockReference: "leftBracket",
+                breakAfter: true,
+                indentAfter: 1
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*"
+                iterator: "*",
+                breakAfter: true,
+                indentAfter: -1
             },
             closeBlock: {
-                blockReference: "rightBracket"
+                blockReference: "rightBracket",
+                breakAfter: true
             },
             elseIfComplement: {
                 nodeType: "ElseIfComplement",

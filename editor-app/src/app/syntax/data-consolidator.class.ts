@@ -55,11 +55,14 @@ export class DataConsolidator {
             }
 
             currentLine.pushBlock(item);
+
             if (item.lineJump) {
                 currentLine = new BlocksLine();
                 currentLine.indentation = indentation;
                 lines.push(currentLine);
             }
+
+            item.suggestions.forEach(suggestion => currentLine.pushSuggestion(suggestion));
         });
 
         return lines;

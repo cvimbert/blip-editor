@@ -20,7 +20,7 @@ export class BlockData {
         this.mainText = data.text;
         this.type = data.itemClass;
         this.class = data.class;
-        this.lineJump = data.breakAfter;
+        //this.lineJump = data.breakAfter;
         this.value = data.value;
     }
 

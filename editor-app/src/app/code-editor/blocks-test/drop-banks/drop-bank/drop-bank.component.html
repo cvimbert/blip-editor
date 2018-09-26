@@ -13,15 +13,22 @@
         <div class="line" *ngFor="let line of data; index as i">
             <div class="line-number">{{ i + 1 }}</div>
             <div class="tabulation" [style.width.px]="30 * line.indentation"></div>
-            <block-item
-                    *ngFor="let blockData of line.blocks"
-                    #blockitem
-                    [index]="incrementedBlocksCount"
-                    [bankType]="type"
-                    [bankName]="name"
-                    [data]="blockData"
-            >
-            </block-item>
+            <ng-container *ngFor="let blockData of line.blocks">
+                <block-item
+                        *ngIf="blockData.block"
+                        #blockitem
+                        [index]="incrementedBlocksCount"
+                        [bankType]="type"
+                        [bankName]="name"
+                        [data]="blockData.block"
+                >
+                </block-item>
+                <suggestion-item
+                        *ngIf="blockData.suggestion"
+                        [data]="blockData.suggestion"
+                >
+                </suggestion-item>
+            </ng-container>
         </div>
     </div>
 

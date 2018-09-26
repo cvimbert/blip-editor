@@ -23,6 +23,7 @@ import { NumericValueDropBankComponent } from './blocks-test/drop-banks/numeric-
 import { BlocksLineComponent } from './blocks-test/blocks-line/blocks-line.component';
 import { VirtualCodeKeyboardComponent } from './blocks-test/virtual-code-keyboard/virtual-code-keyboard.component';
 import { DropBankEditComponent } from './blocks-test/drop-bank-edit/drop-bank-edit.component';
+import { SuggestionItemComponent } from './blocks-test/suggestion-item/suggestion-item.component';
 
 @NgModule({
     imports: [
@@ -50,7 +51,8 @@ import { DropBankEditComponent } from './blocks-test/drop-bank-edit/drop-bank-ed
         NumericValueDropBankComponent,
         BlocksLineComponent,
         VirtualCodeKeyboardComponent,
-        DropBankEditComponent
+        DropBankEditComponent,
+        SuggestionItemComponent
     ],
     providers: [
         CodeFilesProviderService,

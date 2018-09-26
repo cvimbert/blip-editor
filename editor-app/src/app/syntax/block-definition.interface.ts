@@ -8,6 +8,9 @@ export interface BlockDefinition {
     valueProvider?: string;
     textProvider?: Function;
 
+    nodeReference?: string;
+    include?: string[];
+
     // ici ?
     breakAfter?: boolean;
     indentAfter?: number;

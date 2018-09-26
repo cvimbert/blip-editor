@@ -75,6 +75,19 @@ export class BlocksService {
         this.dropBanksByName[bankName].update();
     }
 
+    useBankItem(bankName: string, bankType: string, data: BankItemInterface) {
+        const bankItemDefinition: BlockDefinition = blocksDictionary[data.type];
+
+        if (bankItemDefinition.nodeReference) {
+            // drop de bloc multiple
+            const blockIds: string[] = this.syntaxDeclaration.getNodeDirectChildren(bankItemDefinition.nodeReference, bankItemDefinition.include);
+            blockIds.forEach(id => this.registerDropAction(bankName, id, bankType));
+        } else {
+            // drop de bloc simple
+            this.registerDropAction(bankName, data.type, bankType);
+        }
+    }
+
     registerDropAction(bankName: string, blockName: string, bankType: string) {
 
         // TODO: à supprimer

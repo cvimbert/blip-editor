@@ -18,8 +18,8 @@ export interface SyntaxNode {
     error?: string;
 
     // plus ici, à déplacer
-    // breakAfter?: boolean;
-    // indentAfter?: boolean;
+    breakAfter?: boolean;
+    indentAfter?: number;
 
     definitionClass?: any;
 }

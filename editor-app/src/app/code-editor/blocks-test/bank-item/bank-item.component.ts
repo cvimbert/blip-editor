@@ -52,7 +52,7 @@ export class BankItemComponent implements OnInit {
     }
 
     useKey() {
-        this.blocksService.registerDropAction(this.blocksService.currentBankName, this.data.type, this.blocksService.currentBankType);
+        this.blocksService.useBankItem(this.blocksService.currentBankName, this.blocksService.currentBankType, this.data);
     }
 
 }
