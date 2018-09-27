@@ -146,7 +146,8 @@ export class BlocksService {
             this.dropBanksByName[bankName].onError.emit(res.error);
         }
 
-        this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], res.error);
+        // ici on devrait pouvoir associer un node à chaque bloc
+        this.linesConsolidated[bankName] = this.consolidator.getConsolidatedAndLinedData(this.dropped[bankName], res.error, res);
 
         setTimeout(() => {
             this.droppedComponent[bankName] = this.dropBanksByName[bankName].blockItems.toArray();

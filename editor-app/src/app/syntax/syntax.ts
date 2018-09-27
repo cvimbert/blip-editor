@@ -412,11 +412,13 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             elseIfComplement: {
                 nodeType: "ElseIfComplement",
-                iterator: "*"
+                iterator: "*",
+                breakAfter: true
             },
             elseComplement: {
                 nodeType: "ElseComplement",
-                iterator: "*"
+                iterator: "*",
+                breakAfter: true
             }
         }
     },
@@ -435,16 +437,18 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             openBlock: {
                 blockReference: "leftBracket",
-                // breakAfter: true
+                breakAfter: true,
+                indentAfter: 1
             },
             codeBlock: {
                 nodeType: "CodeBlock",
                 iterator: "*",
-                // breakAfter: true
+                breakAfter: true,
+                indentAfter: -1
             },
             closeBlock: {
                 blockReference: "rightBracket",
-                // breakAfter: true
+                breakAfter: true
             }
         }
     },
@@ -458,15 +462,19 @@ export const nodesDictionary: SyntaxNodesDictionary = {
 
             openBlock: {
                 blockReference: "leftBracket",
-                // breakAfter: true
+                breakAfter: true,
+                indentAfter: 1
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*"
+                iterator: "*",
+                breakAfter: true,
+                indentAfter: -1
             },
             closeBlock: {
                 blockReference: "rightBracket",
-                // breakAfter: true
+                breakAfter: true,
+                indentAfter: -1
             },
         }
     },

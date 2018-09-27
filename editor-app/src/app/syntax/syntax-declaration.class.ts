@@ -5,6 +5,7 @@ import {BlockUnit} from "./block-unit.interface";
 import {SyntaxCheckResult} from "./syntax-check-result.class";
 import {SyntaxCheckError} from "./syntax-check-error.class";
 import {SyntaxCheckCompleteResult} from "./syntax-check-complete-result.interface";
+import {SyntaxStack} from "./syntax-stack.class";
 
 export class SyntaxDeclaration {
 
@@ -30,20 +31,23 @@ export class SyntaxDeclaration {
         checkedNodeName: string
     ): SyntaxCheckCompleteResult {
         const error: SyntaxCheckError = new SyntaxCheckError();
+        const stack: SyntaxStack = new SyntaxStack();
 
         return {
-            result: this.parse(blockUnits, checkedNodeName, error),
-            error: error
+            result: this.parse(blockUnits, checkedNodeName, error, stack),
+            error: error,
+            stack: stack
         }
     }
 
     parse(
         blockUnits: BlockUnit[],
         checkedNodeName: string,
-        error: SyntaxCheckError
+        error: SyntaxCheckError,
+        stack: SyntaxStack
     ): SyntaxCheckResult[] {
 
-        const res: SyntaxCheckResult[] = this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName], 0, error);
+        const res: SyntaxCheckResult[] = this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName], 0, error, stack);
 
         if (res) {
             return (res[res.length - 1].index < blockUnits.length) ? null : res;
@@ -56,7 +60,8 @@ export class SyntaxDeclaration {
         blockUnits: BlockUnit[],
         checkedNode: string | SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError
+        error: SyntaxCheckError,
+        stack: SyntaxStack
     ): SyntaxCheckResult {
 
         let result: SyntaxCheckResult = new SyntaxCheckResult(index);
@@ -77,7 +82,7 @@ export class SyntaxDeclaration {
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.children[key], index, error);
+                let currentRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.children[key], index, error, stack);
 
                 if (currentRes !== null) {
                     // on met à jour le résultat
@@ -104,7 +109,7 @@ export class SyntaxDeclaration {
 
                 // on check l'intégralité des éléments de "list", qui doivent tous retourner true pour que le noeud soit validé
                 let startSub: number = subIndex;
-                let currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, error);
+                let currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, error, stack);
 
                 // null -> échec de parsing
                 // [] -> pas de valeur de retour sur un élément optionnel
@@ -113,7 +118,7 @@ export class SyntaxDeclaration {
                 // été évalué positivement
                 if (currRes === null || currRes.length === 0) {
                     if (currentNode.completeParsing && indexInList > 0) {
-                        error.pushOption(key, subIndex);
+                        error.pushOption(key, subIndex, <SyntaxNode>currentNode.list[key]);
                     }
                 }
 
@@ -167,7 +172,7 @@ export class SyntaxDeclaration {
 
         } else if (currentNode.nodeType) {
 
-            const res: SyntaxCheckResult = this.unitCheck(blockUnits, this.completeSyntaxNodesDictionary[<string>currentNode.nodeType], index, error);
+            const res: SyntaxCheckResult = this.unitCheck(blockUnits, this.completeSyntaxNodesDictionary[<string>currentNode.nodeType], index, error, stack);
 
             if (res) {
 
@@ -186,6 +191,8 @@ export class SyntaxDeclaration {
                 result.value = blockUnits[index].value;
                 result.index++;
 
+                stack.pushNode(currentNode, index);
+
                 return result;
             } else {
                 return null;
@@ -197,7 +204,8 @@ export class SyntaxDeclaration {
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError
+        error: SyntaxCheckError,
+        stack: SyntaxStack
     ): SyntaxCheckResult {
 
         let currentNode: SyntaxNode;
@@ -208,7 +216,7 @@ export class SyntaxDeclaration {
             currentNode = checkedNode;
         }
 
-        let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error);
+        let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error, stack);
 
         if (res) {
             if (currentNode.definitionClass) {
@@ -223,7 +231,8 @@ export class SyntaxDeclaration {
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError
+        error: SyntaxCheckError,
+        stack: SyntaxStack
         ): SyntaxCheckResult[] {
 
         switch (checkedNode.iterator) {
@@ -232,7 +241,7 @@ export class SyntaxDeclaration {
 
                 let resArr: SyntaxCheckResult[] = [];
 
-                let res: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
+                let res: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
 
                 if (res === null) {
                     return checkedNode.iterator === "*" ? resArr : null;
@@ -241,7 +250,7 @@ export class SyntaxDeclaration {
                 resArr.push(res);
 
                 while (res !== null) {
-                    let newRes: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error);
+                    let newRes: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error, stack);
 
                     if (newRes === null) {
                         return resArr;
@@ -258,7 +267,7 @@ export class SyntaxDeclaration {
                 resArr = [];
 
                 // il doit y avoir une première fois ou non
-                res = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
+                res = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
 
                 if (res === null) {
                     return resArr;
@@ -267,12 +276,12 @@ export class SyntaxDeclaration {
                 resArr.push(res);
 
                 // mais pas de seconde !
-                let nres: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error);
+                let nres: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error, stack);
 
                 return (nres !== null) ? null : resArr;
 
             default:
-                let resVal: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
+                let resVal: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
                 return resVal === null ? null : [resVal];
         }
     }

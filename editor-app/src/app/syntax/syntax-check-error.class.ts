@@ -14,17 +14,19 @@ export class SyntaxCheckError {
         return "Pas d'erreur définie : " + this.key;
     }
 
-    pushFailure(key: string, atIndex: number) {
+    pushFailure(key: string, atIndex: number, node: SyntaxNode) {
         this.parsingFailures.push({
             key: key,
-            index: atIndex
+            index: atIndex,
+            node: node
         });
     }
 
-    pushOption(key: string, atIndex: number) {
+    pushOption(key: string, atIndex: number, node: SyntaxNode) {
         this.parsingOptions.push({
             key: key,
-            index: atIndex
+            index: atIndex,
+            node: node
         });
     }
 }
