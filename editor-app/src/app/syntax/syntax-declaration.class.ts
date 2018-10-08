@@ -86,7 +86,11 @@ export class SyntaxDeclaration {
 
                 if (currentRes !== null) {
                     // on met à jour le résultat
-                    result.index = currentRes[currentRes.length - 1].index;
+
+                    if (currentRes.length > 0) {
+                        result.index = currentRes[currentRes.length - 1].index;
+                    }
+
                     result.pushChildrenArray(key, currentRes);
 
                     return result;
@@ -116,10 +120,16 @@ export class SyntaxDeclaration {
 
                 // on ne remplit le tableau d'options (ou suggestions) que si le premier élément de le liste a
                 // été évalué positivement
-                if (currRes === null || currRes.length === 0) {
+
+
+                // TODO attention au childrenCount, vérifier plutôt de manière récursive si le resultat a des children
+                if (currRes === null || currRes.length === 0 || (currRes.length === 1 && currRes[0].endIndex !== currRes[0].startIndex)) {
+                    console.log(key, currRes);
                     if (currentNode.completeParsing && indexInList > 0) {
                         error.pushOption(key, subIndex, <SyntaxNode>currentNode.list[key]);
                     }
+                } else {
+                    stack.pushNode(<SyntaxNode>currentNode.list[key], subIndex);
                 }
 
                 if (currRes === null) {
@@ -191,7 +201,8 @@ export class SyntaxDeclaration {
                 result.value = blockUnits[index].value;
                 result.index++;
 
-                stack.pushNode(currentNode, index);
+                // TODO déplacer vers un endroit plus générique
+                // stack.pushNode(currentNode, index);
 
                 return result;
             } else {

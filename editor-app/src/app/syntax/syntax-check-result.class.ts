@@ -28,6 +28,10 @@ export class SyntaxCheckResult {
         return this.index - 1;
     }
 
+    get childrenCount(): number {
+        return Object.keys(this.children).length;
+    }
+
     getValues(path: string): any[] {
         const pathElems: string[] = path.split("/");
         return this.getSyntaxResult(pathElems).map(result => result.value);

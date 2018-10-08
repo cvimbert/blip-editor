@@ -11,6 +11,7 @@ import {SyntaxCheckError} from "../../../../syntax/syntax-check-error.class";
 import {SyntaxCheckResult} from "../../../../syntax/syntax-check-result.class";
 import {ConsolidatedBlockDataUnit} from "../../../../syntax/consolidated-block-data-unit.class";
 import {BlocksLine} from "../../../../syntax/blocks-line.class";
+import {SyntaxCheckErrorUnit} from "../../../../syntax/syntax-check-error-unit.interface";
 
 @Component({
     selector: 'drop-bank',
@@ -65,6 +66,10 @@ export class DropBankComponent implements OnInit, OnDestroy {
 
     edit() {
 
+    }
+
+    dropSuggestion(suggestion: SyntaxCheckErrorUnit) {
+        console.log("drop");
     }
 
     ngOnDestroy() {

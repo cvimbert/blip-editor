@@ -48,6 +48,11 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
         nodeReference: "If",
         include: ["elseComplement"]
     },
+    elseSup: {
+        itemClass: "basic",
+        text: "else...",
+        nodeReference: "ElseComplement"
+    },
     ifOpener: {
         itemClass: "basic",
         text: "if ("
@@ -86,8 +91,8 @@ export const blocksDictionary: BlockDefinitionsDictionary = {
     },
     codeBlock: {
         itemClass: "code",
-        text: "codeBlock",
-        //breakAfter: true
+        text: "codeBlock;",
+        breakAfter: true
     },
     booleanAnd: {
         // temp, pour la couleur rouge
@@ -178,6 +183,24 @@ export const multiBlocks: MultiBlocksDeclarationDictionary = {
 export const nodesDictionary: SyntaxNodesDictionary = {
     ImageFileReference: {
         blockReference: "imageFileReference"
+    },
+    CodeBlock: {
+        children: {
+            instruction: {
+                nodeType: "Instruction",
+                iterator: "*"
+            }
+        }
+    },
+    Instruction: {
+        children: {
+            if: {
+                nodeType: "If"
+            },
+            block: {
+                blockReference: "codeBlock"
+            }
+        }
     },
     NumericValue: {
         definitionClass: NumericValueDefinition,
@@ -390,7 +413,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             booleanEvaluation: {
                 nodeType: "CompleteBooleanExpression",
-                name: "Evaluation booléenne"
+                name: "condition"
             },
             endIf: {
                 blockReference: "rightParenthesis"
@@ -402,7 +425,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*",
+                name: "instructions",
                 breakAfter: true,
                 indentAfter: -1
             },
@@ -413,11 +436,13 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             elseIfComplement: {
                 nodeType: "ElseIfComplement",
                 iterator: "*",
+                name: "else if...",
                 breakAfter: true
             },
             elseComplement: {
                 nodeType: "ElseComplement",
                 iterator: "*",
+                name: "else",
                 breakAfter: true
             }
         }
@@ -442,7 +467,7 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*",
+                name: "instructions",
                 breakAfter: true,
                 indentAfter: -1
             },
@@ -467,9 +492,9 @@ export const nodesDictionary: SyntaxNodesDictionary = {
             },
             codeBlock: {
                 nodeType: "CodeBlock",
-                iterator: "*",
                 breakAfter: true,
-                indentAfter: -1
+                indentAfter: -1,
+                name: "instructions"
             },
             closeBlock: {
                 blockReference: "rightBracket",
@@ -477,9 +502,5 @@ export const nodesDictionary: SyntaxNodesDictionary = {
                 indentAfter: -1
             },
         }
-    },
-    CodeBlock: {
-        description: "code block",
-        blockReference: "codeBlock"
     }
 };

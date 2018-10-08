@@ -23,10 +23,12 @@ export class SyntaxCheckError {
     }
 
     pushOption(key: string, atIndex: number, node: SyntaxNode) {
-        this.parsingOptions.push({
-            key: key,
-            index: atIndex,
-            node: node
-        });
+        //if (this.parsingOptions.length === 0) {
+            this.parsingOptions.push({
+                key: key,
+                index: atIndex,
+                node: node
+            });
+        //}
     }
 }

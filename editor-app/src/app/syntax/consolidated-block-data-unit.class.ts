@@ -33,12 +33,14 @@ export class ConsolidatedBlockDataUnit {
 
         this.class = definition.itemClass;
 
-        if (node) {
+        /*if (node) {
             this.lineJump = node.breakAfter;
             this.indentAfter = node.indentAfter;
-        }
-        //this.lineJump = definition.breakAfter;
-        //this.indentAfter = definition.indentAfter;
+        }*/
+
+        // temporairement réactivé
+        this.lineJump = definition.breakAfter;
+        this.indentAfter = definition.indentAfter;
     }
 
     pushSuggestion(suggestion: SyntaxCheckErrorUnit) {
