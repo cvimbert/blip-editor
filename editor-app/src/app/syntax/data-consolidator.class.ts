@@ -17,7 +17,7 @@ export class DataConsolidator {
 
     getConsolidatedData(data: BlockDataUnit[], error: SyntaxCheckError, result: SyntaxCheckCompleteResult): ConsolidatedBlockDataUnit[] {
 
-        const consolidated: ConsolidatedBlockDataUnit[] = data.map((unit, index: number) => new ConsolidatedBlockDataUnit(this.syntax, unit, result.stack.stack[index]));
+        const consolidated: ConsolidatedBlockDataUnit[] = data.map((unit, index: number) => new ConsolidatedBlockDataUnit(this.syntax, unit));
 
         if (error && consolidated && consolidated.length > 0) {
 

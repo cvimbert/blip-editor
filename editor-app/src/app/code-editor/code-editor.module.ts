@@ -24,6 +24,7 @@ import { BlocksLineComponent } from './blocks-test/blocks-line/blocks-line.compo
 import { VirtualCodeKeyboardComponent } from './blocks-test/virtual-code-keyboard/virtual-code-keyboard.component';
 import { DropBankEditComponent } from './blocks-test/drop-bank-edit/drop-bank-edit.component';
 import { SuggestionItemComponent } from './blocks-test/suggestion-item/suggestion-item.component';
+import { TestComponent } from './blocks-test/test/test.component';
 
 @NgModule({
     imports: [
@@ -52,7 +53,8 @@ import { SuggestionItemComponent } from './blocks-test/suggestion-item/suggestio
         BlocksLineComponent,
         VirtualCodeKeyboardComponent,
         DropBankEditComponent,
-        SuggestionItemComponent
+        SuggestionItemComponent,
+        TestComponent
     ],
     providers: [
         CodeFilesProviderService,

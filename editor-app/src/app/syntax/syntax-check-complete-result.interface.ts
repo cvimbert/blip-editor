@@ -5,5 +5,4 @@ import {SyntaxStack} from "./syntax-stack.class";
 export interface SyntaxCheckCompleteResult {
     result: SyntaxCheckResult[];
     error: SyntaxCheckError;
-    stack: SyntaxStack;
 }

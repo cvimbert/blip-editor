@@ -1,4 +1,5 @@
 import {SyntaxNode} from "./syntax-node.interface";
+import {SyntaxCompletion} from "./syntax-completion.enum";
 
 export class SyntaxCheckResult {
 
@@ -7,6 +8,9 @@ export class SyntaxCheckResult {
     value: any = null;
     startIndex: number;
     resultDefinitionObject: any;
+
+    // ajout crucial
+    completion: SyntaxCompletion;
 
     errorNode: SyntaxNode;
 

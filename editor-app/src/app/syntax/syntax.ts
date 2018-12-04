@@ -180,6 +180,8 @@ export const multiBlocks: MultiBlocksDeclarationDictionary = {
     }
 };
 
+
+
 export const nodesDictionary: SyntaxNodesDictionary = {
     ImageFileReference: {
         blockReference: "imageFileReference"

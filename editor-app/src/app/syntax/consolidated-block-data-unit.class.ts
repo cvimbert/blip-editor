@@ -20,8 +20,7 @@ export class ConsolidatedBlockDataUnit {
 
     constructor(
         syntax: SyntaxDeclaration,
-        private unit: BlockDataUnit,
-        node: SyntaxNode
+        private unit: BlockDataUnit
     ) {
         const definition: BlockDefinition = syntax.blocksDictionary[unit.type];
 

@@ -6,6 +6,8 @@ import {SyntaxCheckResult} from "./syntax-check-result.class";
 import {SyntaxCheckError} from "./syntax-check-error.class";
 import {SyntaxCheckCompleteResult} from "./syntax-check-complete-result.interface";
 import {SyntaxStack} from "./syntax-stack.class";
+import {SyntaxEvaluation} from "./syntax-evaluation.class";
+import {SyntaxCompletion} from "./syntax-completion.enum";
 
 export class SyntaxDeclaration {
 
@@ -31,40 +33,89 @@ export class SyntaxDeclaration {
         checkedNodeName: string
     ): SyntaxCheckCompleteResult {
         const error: SyntaxCheckError = new SyntaxCheckError();
-        const stack: SyntaxStack = new SyntaxStack();
 
         return {
-            result: this.parse(blockUnits, checkedNodeName, error, stack),
-            error: error,
-            stack: stack
+            result: this.parse(blockUnits, checkedNodeName, error),
+            error: error
         }
+    }
+
+    getMeanCompletetionByResult(result: SyntaxCheckResult[], iterator: string = ""): SyntaxCompletion {
+        const completions: SyntaxCompletion[] = result.map(cmpRes => cmpRes.completion);
+        return this.getMeanCompletion(completions, iterator);
+    }
+
+
+    // Sûrement pas correct, à vérifier
+    getMeanCompletion(completions: SyntaxCompletion[] | {[key: string]: SyntaxCompletion}, iterator: string = ""): SyntaxCompletion {
+        let hasComplete = false;
+        let hasIncomplete = false;
+        let hasEmpty = false;
+
+        //console.log("completions", completions);
+
+        let compArr: SyntaxCompletion[] = Array.isArray(completions) ? completions : Object.values(completions);
+
+        // cas à vérifier
+        if (compArr.length === 0) {
+            //console.log("empty");
+            return SyntaxCompletion.EMPTY;
+        }
+
+        for (let comp of compArr) {
+
+            if (comp === SyntaxCompletion.COMPLETE) {
+                //console.log("yes");
+                hasComplete = true;
+                //console.log(hasComplete);
+            } else if (comp === SyntaxCompletion.INCOMPLETE) {
+                hasIncomplete = true;
+            } else if (comp === SyntaxCompletion.EMPTY) {
+                hasEmpty = true;
+            }
+
+            if (hasComplete && (hasIncomplete || hasEmpty)) {
+                //console.log("incomplete");
+                return SyntaxCompletion.INCOMPLETE;
+            }
+        }
+
+        //console.log("check", compArr, hasIncomplete, hasIncomplete, hasEmpty);
+
+        if (hasEmpty && !(hasIncomplete || hasIncomplete)) {
+            return SyntaxCompletion.EMPTY;
+        }
+
+        if (hasComplete && !(hasIncomplete || hasEmpty)) {
+            //console.log("complete !!!");
+            return SyntaxCompletion.COMPLETE;
+        }
+
+        return SyntaxCompletion.INCOMPLETE;
     }
 
     parse(
         blockUnits: BlockUnit[],
         checkedNodeName: string,
         error: SyntaxCheckError,
-        stack: SyntaxStack
     ): SyntaxCheckResult[] {
 
-        const res: SyntaxCheckResult[] = this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName], 0, error, stack);
-
-        if (res) {
-            return (res[res.length - 1].index < blockUnits.length) ? null : res;
-        } else {
-            return null;
-        }
+        // la fonction devient inutile, du coup
+        return this.baseCheck(blockUnits, this.completeSyntaxNodesDictionary[checkedNodeName], 0, error);
     }
 
     unitCheck(
         blockUnits: BlockUnit[],
         checkedNode: string | SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError,
-        stack: SyntaxStack
+        error: SyntaxCheckError
     ): SyntaxCheckResult {
 
         let result: SyntaxCheckResult = new SyntaxCheckResult(index);
+
+        //let evaluation: SyntaxEvaluation = new SyntaxEvaluation(index);
+        //evaluation.results = [result];
+
         let currentNode: SyntaxNode;
 
         if (typeof checkedNode === "object") {
@@ -74,7 +125,9 @@ export class SyntaxDeclaration {
         }
 
         if (!blockUnits[index]) {
-            return null;
+            console.log("n'existe pas à l'index indiqué", index);
+
+            return result;
         }
 
         // un node ne peut contenir que : list, children ou blockReference, ou nodeType
@@ -82,132 +135,116 @@ export class SyntaxDeclaration {
         if (currentNode.children) {
 
             for (let key in currentNode.children) {
-                let currentRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.children[key], index, error, stack);
+                let currentRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.children[key], index, error);
 
-                if (currentRes !== null) {
+                // théoriquement (mais c'est à vérifier, il ne devrait y avoir qu'un seul résultat au base check
+                // du moins dans le cas de 'list', où l'iterateur n'a pas de sens
+
+                if (currentRes !== null && currentRes.length > 0 && currentRes[0].completion === SyntaxCompletion.COMPLETE) {
                     // on met à jour le résultat
 
-                    if (currentRes.length > 0) {
-                        result.index = currentRes[currentRes.length - 1].index;
-                    }
+                    result.index = currentRes[currentRes.length - 1].index;
 
                     result.pushChildrenArray(key, currentRes);
+                    result.completion = SyntaxCompletion.COMPLETE;
 
+                    // on a un résultat possible, c'est le seul que nous renvoyons
                     return result;
                 }
             }
 
-            return null;
+            result.completion = SyntaxCompletion.FAILURE;
+
+            // zéro resultat
+            return result;
 
         } else if (currentNode.list) {
 
+            // élément clé de l'analyse syntaxique
+
             let subIndex: number = index;
             let indexInList: number = 0;
-            let hasFailed: boolean = false;
+
+
+            // plusieurs cas possible
+            // incomplete : si on a une série d'éléments à complete, et pas les suivants
+            // complete : si on tous les éléments de la liste à complete (ou empty dans le cas de * et ?)
+            // failure dans le cas où un des éléments de la liste retourne failure
+            // failure est un cas extrème, qui devrait ne jamais arriver dans l'idéal
+
+            const completions: {[key: string]: SyntaxCompletion} = {};
+            const keys: string[] = Object.keys(currentNode.list);
 
             for (let key in currentNode.list) {
 
-                if (currentNode.completeParsing) {
-                    //console.log("parse " + key + " at " + subIndex);
-                }
-
                 // on check l'intégralité des éléments de "list", qui doivent tous retourner true pour que le noeud soit validé
-                let startSub: number = subIndex;
-                let currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, <SyntaxNode>currentNode.list[key], subIndex, error, stack);
+                const node: SyntaxNode = <SyntaxNode>currentNode.list[key];
+                const currRes: SyntaxCheckResult[] = this.baseCheck(blockUnits, node, subIndex, error);
 
-                // null -> échec de parsing
-                // [] -> pas de valeur de retour sur un élément optionnel
+                // les seuls cas dans lesquels currRes a une longueur supérieure à 1, c'est dans les cas des
+                // itérateurs * et +
 
-                // on ne remplit le tableau d'options (ou suggestions) que si le premier élément de le liste a
-                // été évalué positivement
+                //console.log("key", key, currRes);
+                // allez, y'a plus qu'à...
 
+                let meanCompletion: SyntaxCompletion = this.getMeanCompletetionByResult(currRes);
 
-                // TODO attention au childrenCount, vérifier plutôt de manière récursive si le resultat a des children
-                if (currRes === null || currRes.length === 0 || (currRes.length === 1 && currRes[0].endIndex !== currRes[0].startIndex)) {
-                    console.log(key, currRes);
-                    if (currentNode.completeParsing && indexInList > 0) {
-                        error.pushOption(key, subIndex, <SyntaxNode>currentNode.list[key]);
-                    }
-                } else {
-                    stack.pushNode(<SyntaxNode>currentNode.list[key], subIndex);
-                }
+                /*if (key === "s") {
+                    console.log("!!!!", currRes);
+                }*/
 
-                if (currRes === null) {
+                completions[key] = meanCompletion;
 
-                    // ne devrait plus être utile bientôt
-                    if (subIndex > index || subIndex === 0) {
-                        error.node = currentNode;
-                        error.start = index;
-                        error.end = subIndex - 1;
-                        error.key = key;
-                    }
+                // à faire dans une seconde boucle
+                if (meanCompletion === SyntaxCompletion.COMPLETE) {
+                    result.pushChildrenArray(key, currRes);
 
-                    // attention à la distinction erreur <=> suggestion
-                    if (currentNode.completeParsing) {
-                        //console.log("failure in list parsing", key, indexInList);
-                        //error.pushFailure(key, subIndex);
-                    }
-
-                    hasFailed = true;
-
-                    if (!currentNode.completeParsing || indexInList === 0) {
-                        return null;
-                    }
-
-                } else {
-                    if (currentNode.completeParsing) {
-                        //console.log("success in list parsing", key, indexInList, currRes);
-                    }
-
-                    if (currRes && currRes[currRes.length - 1] && currRes[currRes.length - 1].index !== subIndex) {
-                        result.pushChildrenArray(key, currRes);
-                    }
-
-                    if (currRes && currRes.length > 0) {
+                    if (currRes.length > 0) {
                         subIndex = currRes[currRes.length - 1].index;
                     }
-
                 }
 
                 indexInList++;
             }
 
-            if (!hasFailed) {
-                result.index = subIndex;
-                return result;
-            } else {
-                return null;
-            }
+            console.log("completions", completions);
+
+            const globalCompletion: SyntaxCompletion = this.getMeanCompletion(completions);
+            console.log("global", globalCompletion);
+
+            result.completion = globalCompletion;
+            result.index = subIndex;
+            return result;
 
 
         } else if (currentNode.nodeType) {
 
-            const res: SyntaxCheckResult = this.unitCheck(blockUnits, this.completeSyntaxNodesDictionary[<string>currentNode.nodeType], index, error, stack);
-
-            if (res) {
-
-            }
-
-            return res;
+            return this.unitCheck(blockUnits, this.completeSyntaxNodesDictionary[<string>currentNode.nodeType], index, error);
 
         } else if (currentNode.blockReference) {
+
+            // la cas le plus simple: une référence à un bloc
+            // deux réponses possibles : complete ou failure
 
             let type: string = blockUnits[index].type;
             let subType: string = this.blocksDictionary[type].type;
 
+            result.type = currentNode.blockReference;
+
             if ((subType || type) === currentNode.blockReference) {
 
-                result.type = currentNode.blockReference;
+                // succès de l'évaluation
                 result.value = blockUnits[index].value;
                 result.index++;
-
-                // TODO déplacer vers un endroit plus générique
-                // stack.pushNode(currentNode, index);
-
-                return result;
+                result.completion = SyntaxCompletion.COMPLETE;
             } else {
-                return null;
+
+                // bloc introuvable
+                result.index = index;
+                result.completion = SyntaxCompletion.INCOMPLETE;
             }
+
+            return result;
         }
     }
 
@@ -215,8 +252,7 @@ export class SyntaxDeclaration {
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError,
-        stack: SyntaxStack
+        error: SyntaxCheckError
     ): SyntaxCheckResult {
 
         let currentNode: SyntaxNode;
@@ -227,9 +263,9 @@ export class SyntaxDeclaration {
             currentNode = checkedNode;
         }
 
-        let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error, stack);
+        let res: SyntaxCheckResult = this.unitCheck(blockUnits, currentNode, index, error);
 
-        if (res) {
+        if (res && res.completion === SyntaxCompletion.COMPLETE) {
             if (currentNode.definitionClass) {
                 res.resultDefinitionObject = new currentNode.definitionClass(res);
             }
@@ -242,9 +278,8 @@ export class SyntaxDeclaration {
         blockUnits: BlockUnit[],
         checkedNode: SyntaxNode,
         index: number = 0,
-        error: SyntaxCheckError,
-        stack: SyntaxStack
-        ): SyntaxCheckResult[] {
+        error: SyntaxCheckError
+    ): SyntaxCheckResult[] {
 
         switch (checkedNode.iterator) {
             case "+":
@@ -252,7 +287,7 @@ export class SyntaxDeclaration {
 
                 let resArr: SyntaxCheckResult[] = [];
 
-                let res: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
+                let res: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
 
                 if (res === null) {
                     return checkedNode.iterator === "*" ? resArr : null;
@@ -261,7 +296,7 @@ export class SyntaxDeclaration {
                 resArr.push(res);
 
                 while (res !== null) {
-                    let newRes: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error, stack);
+                    let newRes: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error);
 
                     if (newRes === null) {
                         return resArr;
@@ -278,7 +313,7 @@ export class SyntaxDeclaration {
                 resArr = [];
 
                 // il doit y avoir une première fois ou non
-                res = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
+                res = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
 
                 if (res === null) {
                     return resArr;
@@ -287,13 +322,17 @@ export class SyntaxDeclaration {
                 resArr.push(res);
 
                 // mais pas de seconde !
-                let nres: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error, stack);
+                let nres: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, res.index, error);
 
-                return (nres !== null) ? null : resArr;
+                return (nres.completion === SyntaxCompletion.COMPLETE) ? resArr : [];
 
             default:
-                let resVal: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error, stack);
-                return resVal === null ? null : [resVal];
+                if (index < blockUnits.length) {
+                    let resVal: SyntaxCheckResult = this.unitCheckAndCreation(blockUnits, checkedNode, index, error);
+                    return [resVal];
+                } else {
+                    return [];
+                }
         }
     }
 
